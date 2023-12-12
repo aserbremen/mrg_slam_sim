@@ -6,6 +6,7 @@ find_package(ament_cmake REQUIRED)
 
 # ROS2 build
 install(DIRECTORY
+  config
   models
   worlds
   launch
