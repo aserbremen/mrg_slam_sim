@@ -60,6 +60,7 @@ def launch_setup(context):
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_robot']['ros__parameters']
     params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
+    print(f'params: {params}')
 
     print(f'share dir {mrg_sim_share_dir}')
     sdf_path = os.path.join(mrg_sim_share_dir, 'models', params['sdf_file'])
@@ -69,7 +70,7 @@ def launch_setup(context):
     x, y, z = params['x'], params['y'], params['z']
     qx, qy, qz, qw = get_quaternion_from_euler(params['roll'], params['pitch'], params['yaw'])
 
-    ign_request_args = 'sdf_filename \"' + sdf_path + '\"' + ', name \"' + params['robot_name'] + \
+    ign_request_args = 'sdf_filename: \"' + sdf_path + '\"' + ', name: \"' + params['robot_name'] + \
         '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
 
     print(f'request args {ign_request_args}')
@@ -81,7 +82,7 @@ def launch_setup(context):
 
     process = ExecuteProcess(
         cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
-             'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args],
+             'ignition.msgs.Boolean', '--timeout', '10000', '--req', ign_request_args],
         output='screen')
 
     return [process]

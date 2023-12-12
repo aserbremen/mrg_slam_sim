@@ -1,12 +1,12 @@
 spawn_robot:
   ros__parameters:
     robot_name: "husky" # name of the robot, certain topic names are namespaced with this name
-    sdf_file: "COSTAR_HUSKY_SENSOR_CONIG_1_LIDAR_ONLY/model.sdf" # path to the sdf file in the share folder of the package
+    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_LIDAR_ONLY/model.sdf" # path to the sdf file in the share folder of the package
     world: "challenge" # name of the world in which the robot should be spawned
     # start pose of the robot in the world
     x: 0.0
     y: 0.0
-    z: 0.0
+    z: 5.0
     roll: 0.0
     pitch: 0.0
     yaw: 0.0
