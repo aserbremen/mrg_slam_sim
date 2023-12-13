@@ -1,11 +1,10 @@
 import os
 import yaml
-import sys
+import xml.etree.ElementTree as ET
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess, DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
 import numpy as np
 
 
@@ -54,31 +53,58 @@ def overwrite_yaml_params_from_cli(yaml_params, cli_params):
     return yaml_params
 
 
+def namespace_sdf_file(sdf_path, namespace):
+    tree = ET.parse(sdf_path)
+    for plugin in tree.findall('model/plugin'):
+        # cmd_vel unique name
+        topic = plugin.find('topic')
+        if topic is not None and topic.text == 'cmd_vel':
+            plugin.find('topic').text = namespace + '/cmd_vel'
+        # Give robot_base_frame (Odometry ground) a unique topic name
+        robot_base_frame = plugin.find('robot_base_frame')
+        if robot_base_frame is not None and robot_base_frame.text == 'base_link':
+            plugin.find('robot_base_frame').text = namespace + '/base_link'
+        # Give a unique topic name for odometry ground truth
+        odom_topic = plugin.find('odom_topic')
+        if odom_topic is not None and odom_topic.text == 'odom':
+            plugin.find('odom_topic').text = namespace + '/odom_ground_truth'
+    for sensor in tree.findall('model/link/sensor'):
+        if sensor.attrib['name'] == 'front_laser':
+            # Give the laser scan points a unique topic name
+            sensor.find('topic').text = namespace + '/laser_scan'
+            # Give the lidar frame a unique velodyne frame id name
+            ignition_frame_id = ET.SubElement(sensor, 'ignition_frame_id')
+            ignition_frame_id.text = namespace + '/velodyne'
+    tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
+
+
 def launch_setup(context):
     mrg_sim_share_dir = get_package_share_directory('mrg_sim')
     config_file = os.path.join(mrg_sim_share_dir, 'config', 'spawn_robot.yaml')
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_robot']['ros__parameters']
     params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
-    print(f'params: {params}')
+    print(yaml.dump(params, sort_keys=False, default_flow_style=False))
 
-    print(f'share dir {mrg_sim_share_dir}')
+    robot_name = params['robot_name']
     sdf_path = os.path.join(mrg_sim_share_dir, 'models', params['sdf_file'])
+    # We create a temporary sdf file to namespace the cmd_vel and laser scan topics for use with multiple robots
+    sdf_path_tmp = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
+    os.system(f'cp {sdf_path} {sdf_path_tmp}')
+
+    namespace_sdf_file(sdf_path_tmp, params['robot_name'])
+
     ign_service_name = '/world/' + params['world'] + '/create'
-    print(f'ign service name {ign_service_name}')
 
     x, y, z = params['x'], params['y'], params['z']
     qx, qy, qz, qw = get_quaternion_from_euler(params['roll'], params['pitch'], params['yaw'])
 
-    ign_request_args = 'sdf_filename: \"' + sdf_path + '\"' + ', name: \"' + params['robot_name'] + \
+    ign_request_args = 'sdf_filename: \"' + sdf_path_tmp + '\"' + ', name: \"' + params['robot_name'] + \
         '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
 
-    print(f'request args {ign_request_args}')
     cmd_string_list = ['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
                        'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
-    print(f'command string list {cmd_string_list}')
     command_string = ' '.join(cmd_string_list)
-    print(f'command string {command_string}')
 
     process = ExecuteProcess(
         cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
