@@ -38,7 +38,7 @@ Now to test the Multi-Robot Graph SLAM Framework with the [mrg_slam](https://git
 
 ```
 ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=atlas x:=-7.0 y:=0.0 z:=3.96 # terminal 1
-ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=bestla x:=0.0 y:=-15.0 z:=3.8
+ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=bestla x:=0.0 y:=-15.0 z:=3.8 # terminal 2
 ```
 
 Move the robots and visualize the results in rviz2:
