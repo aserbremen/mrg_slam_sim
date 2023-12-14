@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="3">
 
-  <name>mrg_sim</name>
+  <name>mrg_slam_sim</name>
 
   <version>0.0.1</version>
 
-  <description>The mrg_sim package for simulating multi-robot LIDAR SLAM</description>
+  <description>The mrg_slam_sim package for simulating multi-robot LIDAR SLAM</description>
 
   <maintainer email="serov@uni-bremen.de">Andreas Serov</maintainer>
 

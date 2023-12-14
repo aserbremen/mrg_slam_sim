@@ -9,9 +9,9 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    mrg_sim_share_dir = get_package_share_directory('mrg_sim')
+    mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
 
-    sim_config_path = os.path.join(mrg_sim_share_dir, 'config', 'dual_robot_sim.yaml')
+    sim_config_path = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_sim.yaml')
     with open(sim_config_path, 'r') as f:
         sim_config = yaml.safe_load(f)
         print(yaml.dump(sim_config, sort_keys=False, default_flow_style=False))
@@ -21,7 +21,7 @@ def generate_launch_description():
 
     # Spawn the two robots
     spawn_robot_python_source = PythonLaunchDescriptionSource(
-        os.path.join(mrg_sim_share_dir, 'launch', 'spawn_robot.launch.py')
+        os.path.join(mrg_slam_sim_share_dir, 'launch', 'spawn_robot.launch.py')
     )
     spawn_robot_1 = IncludeLaunchDescription(
         spawn_robot_python_source,
@@ -33,7 +33,7 @@ def generate_launch_description():
     )
 
     # Start the paraemter bridge for communication between ROS and Ignition Gazebo
-    ros_gz_config = os.path.join(mrg_sim_share_dir, 'config', 'dual_robot_ros_gz_bridge.yaml')
+    ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_ros_gz_bridge.yaml')
     ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
 

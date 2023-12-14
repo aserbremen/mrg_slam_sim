@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(mrg_sim)
+project(mrg_slam_sim)
 
 find_package(ament_cmake REQUIRED)
 

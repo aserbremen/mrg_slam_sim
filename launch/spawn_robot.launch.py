@@ -79,15 +79,15 @@ def namespace_sdf_file(sdf_path, namespace):
 
 
 def launch_setup(context):
-    mrg_sim_share_dir = get_package_share_directory('mrg_sim')
-    config_file = os.path.join(mrg_sim_share_dir, 'config', 'spawn_robot.yaml')
+    mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
+    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_robot.yaml')
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_robot']['ros__parameters']
     params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
     print(yaml.dump(params, sort_keys=False, default_flow_style=False))
 
     robot_name = params['robot_name']
-    sdf_path = os.path.join(mrg_sim_share_dir, 'models', params['sdf_file'])
+    sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['sdf_file'])
     # We create a temporary sdf file to namespace the cmd_vel and laser scan topics for use with multiple robots
     sdf_path_tmp = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
     os.system(f'cp {sdf_path} {sdf_path_tmp}')

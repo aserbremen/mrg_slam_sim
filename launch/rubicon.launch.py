@@ -7,10 +7,10 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    mrg_sim_share_dir = get_package_share_directory('mrg_sim')
+    mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
     ros_gz_sim_share_dir = get_package_share_directory('ros_gz_sim')
 
-    gz_args = os.path.join(mrg_sim_share_dir, 'worlds', 'rubicon.sdf')
+    gz_args = os.path.join(mrg_slam_sim_share_dir, 'worlds', 'rubicon.sdf')
     gz_args += " -v 4"
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
