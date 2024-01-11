@@ -8,6 +8,13 @@ from launch.actions import ExecuteProcess, IncludeLaunchDescription, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
+def booleans_to_strings_in_dict(dictionary):
+    for key, value in dictionary.items():
+        if isinstance(value, bool):
+            dictionary[key] = str(value)
+    return dictionary
+
+
 def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
 
@@ -23,10 +30,14 @@ def generate_launch_description():
     spawn_robot_python_source = PythonLaunchDescriptionSource(
         os.path.join(mrg_slam_sim_share_dir, 'launch', 'spawn_robot.launch.py')
     )
+    # transform all booleans to string, IncldueLaunchDescription does not support booleans
+    booleans_to_strings_in_dict(spawn_robot_params_1)
+    booleans_to_strings_in_dict(spawn_robot_params_2)
     spawn_robot_1 = IncludeLaunchDescription(
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params_1.items(),
     )
+    print(spawn_robot_1)
     spawn_robot_2 = IncludeLaunchDescription(
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params_2.items(),

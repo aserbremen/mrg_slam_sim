@@ -31,6 +31,7 @@ CLI_PARAM_MAPPING = {
     'robot_name': str,
     'world': str,
     'sdf_file': str,
+    'use_imu': bool,
     'x': float,
     'y': float,
     'z': float,
@@ -41,6 +42,7 @@ CLI_PARAM_MAPPING = {
 
 
 def overwrite_yaml_params_from_cli(yaml_params, cli_params):
+    print('Overwriting yaml parameters with command line parameters')
     for key, value in cli_params.items():
         if key in yaml_params and value != '':
             # Since all parameters from cli in ROS2 are strings, we need to infer the correct data type
@@ -53,7 +55,8 @@ def overwrite_yaml_params_from_cli(yaml_params, cli_params):
     return yaml_params
 
 
-def namespace_sdf_file(sdf_path, namespace):
+def namespace_sdf_file(sdf_path, params):
+    namespace = params['robot_name']
     tree = ET.parse(sdf_path)
     for plugin in tree.findall('model/plugin'):
         # cmd_vel unique name
@@ -72,13 +75,23 @@ def namespace_sdf_file(sdf_path, namespace):
         if sensor.attrib['name'] == 'front_laser':
             # Give the laser scan points a unique topic name
             sensor.find('topic').text = namespace + '/laser_scan'
-            # Give the lidar frame a unique velodyne frame id name
+            # Create the ignition frame id for the laser scan and make it unique
             ignition_frame_id = ET.SubElement(sensor, 'ignition_frame_id')
             ignition_frame_id.text = namespace + '/velodyne'
+        if sensor.attrib['name'] == 'imu_sensor' and params['use_imu']:
+            # Set always on for the imu sensor to true
+            sensor.find('always_on').text = '1'
+            # Give the imu sensor a unique topic name
+            sensor.find('topic').text = namespace + '/imu/data'
+            # Create the ignition frame id for the imu sensor and make it unique
+            ignition_frame_id = ET.SubElement(sensor, 'ignition_frame_id')
+            ignition_frame_id.text = namespace + '/base_link'
+
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
 
 def launch_setup(context):
+    print('launching robot')
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
     config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_robot.yaml')
     with open(config_file, 'r') as f:
@@ -92,7 +105,7 @@ def launch_setup(context):
     sdf_path_tmp = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
     os.system(f'cp {sdf_path} {sdf_path_tmp}')
 
-    namespace_sdf_file(sdf_path_tmp, params['robot_name'])
+    namespace_sdf_file(sdf_path_tmp, params)
 
     ign_service_name = '/world/' + params['world'] + '/create'
 

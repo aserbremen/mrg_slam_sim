@@ -8,6 +8,15 @@
   # lazy: true
   direction: GZ_TO_ROS
 
+- ros_topic_name: "atlas/imu/data"
+  gz_topic_name: "atlas/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
+  direction: GZ_TO_ROS
+
 - ros_topic_name: "atlas/odom_ground_truth"
   gz_topic_name: "atlas/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
@@ -33,6 +42,15 @@
   # subscriber_queue: 5
   # publisher_queue: 6
   # lazy: true
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "bestla/imu/data"
+  gz_topic_name: "bestla/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
   direction: GZ_TO_ROS
 
 - ros_topic_name: "bestla/odom_ground_truth"
