@@ -39,7 +39,7 @@ Second robot bestla can be controlled with the keyboard in a new terminal using 
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_bestla -r /cmd_vel:=/bestla/cmd_vel
 ``` 
 
-Now to test the Multi-Robot Graph SLAM Framework with the [mrg_slam](https://github.com/aserbremen/mrg_slam) package, run the following command:
+Now to test the Multi-Robot Graph SLAM Framework with the [mrg_slam](https://github.com/aserbremen/mrg_slam) package. Run two instances of the slam algorithm as follows:
 
 ```
 ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=atlas x:=-7.0 y:=0.0 z:=3.96 # terminal 1
