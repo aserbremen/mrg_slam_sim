@@ -37,18 +37,17 @@ def generate_launch_description():
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params_1.items(),
     )
-    print(spawn_robot_1)
     spawn_robot_2 = IncludeLaunchDescription(
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params_2.items(),
     )
 
-    # Start the paraemter bridge for communication between ROS and Ignition Gazebo
+    # Start the parameter bridge for communication between ROS2 and Ignition Gazebo
     ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_ros_gz_bridge.yaml')
     ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
 
-    if teleop_joy_params['enable_teleop']:
+    if teleop_joy_params['enable_teleop_joy']:
         # Define the teleop node
         teleop_joy_node = GroupAction(
             actions=[
@@ -60,9 +59,13 @@ def generate_launch_description():
                 )
             ]
         )
-    # The other robots have to be controlled with the keyboard teleop node in separate terminals
+    else:
+        # Alternatively you can control the robot with the keyboard using the following command in a new terminal
+        print('Teleop is disabled, you can control the robot with the keyboard using the following command in a new terminal')
+        print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_atlas -r /cmd_vel:=/atlas/cmd_vel')
+        print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_bestla -r /cmd_vel:=/bestla/cmd_vel')
 
     launch_list = [spawn_robot_1, spawn_robot_2, ros_gz_bridge]
-    if teleop_joy_params['enable_teleop']:
+    if teleop_joy_params['enable_teleop_joy']:
         launch_list.append(teleop_joy_node)
     return LaunchDescription(launch_list)
