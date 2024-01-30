@@ -46,7 +46,7 @@ ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=atlas x:=-7.0 y:=0.0 z:
 ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=bestla x:=0.0 y:=-15.0 z:=3.8 # terminal 2
 ```
 
-Or use two instances of Multi-Robot Graph SLAM inside two docker containers. Make sure that the docker containers can communicate with the host machine. For example, environment variables like ROS_LOCALHOST_ONLY or ROS_DOMAIN_ID should not be set. Then run the following commands:
+Or use two instances of Multi-Robot Graph SLAM inside two docker containers. Make sure that the docker containers can communicate with the host machine. For example, environment variables like ROS_LOCALHOST_ONLY or ROS_DOMAIN_ID should not be set or should be correctly set. Then run the following commands:
 
 ``` 
 docker run -it --rm --network=host --ipc=host --pid=host -e MODEL_NAMESPACE=atlas -e USE_SIM_TIME=true -e X=-7.0 -e Y=0.0 -e Z=4 --name atlas_slam andi/mrg_slam:0 # terminal 1
