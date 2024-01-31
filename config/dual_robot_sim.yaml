@@ -1,8 +1,9 @@
 spawn_robot_1:
   ros__parameters:
     robot_name: "atlas" # name of the robot, certain topic names are namespaced with this name
-    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_LIDAR_ONLY/model.sdf" # path to the sdf file in the share folder of the package
+    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf" # path to the sdf file in the share folder of the package
     world: "rubicon" # name of the world in which the robot should be spawned
+    use_imu: true
     # start pose of the robot (atlas) in the world -7.0 0.0 3.96 0.0 0.0 0.0
     x: "-7.0"
     y: "0.0"
@@ -14,8 +15,9 @@ spawn_robot_1:
 spawn_robot_2:
   ros__parameters:
     robot_name: "bestla" # name of the robot, certain topic names are namespaced with this name
-    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_LIDAR_ONLY/model.sdf" # path to the sdf file in the share folder of the package
+    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf" # path to the sdf file in the share folder of the package
     world: "rubicon" # name of the world in which the robot should be spawned
+    use_imu: true
     # start pose of the robot (bestla) in the world 0.0 -15.0 3.8 0.0 0.0 0.0
     x: "0.0"
     y: "-15.0"
@@ -26,7 +28,7 @@ spawn_robot_2:
 
 teleop_joy:
   ros__parameters:
-    enable_teleop: true
+    enable_teleop_joy: false
     joy_config: "xbox" # "xbox" or "ps3"
     joy_dev: "/dev/input/js0" # joystick device
     cmd_vel_topic: "atlas/cmd_vel" # topic to publish the cmd_vel to
