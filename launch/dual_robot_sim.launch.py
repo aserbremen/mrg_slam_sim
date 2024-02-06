@@ -44,7 +44,7 @@ def generate_launch_description():
 
     # Start the parameter bridge for communication between ROS2 and Ignition Gazebo
     ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_ros_gz_bridge.yaml')
-    ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
+    ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_ign_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
 
     if teleop_joy_params['enable_teleop_joy']:
