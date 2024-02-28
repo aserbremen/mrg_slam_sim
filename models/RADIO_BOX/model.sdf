@@ -3,7 +3,7 @@
   <model name="radio_box">
     <pose>0 0 0 0 0 0</pose>
 
-    <!-- Radio box -->
+    <!-- Radio box, high mass and small inertia so it doesn't fall over easily -->
     <link name="cuboid_link">
       <pose>0 0 0.12 0 0 0</pose> <!-- Position the cuboid on the ground -->
       <visual name="visual">
@@ -13,8 +13,8 @@
           </box>
         </geometry>
         <material>
-          <ambient>0.5 0.5 0.5 1</ambient>
-          <diffuse>0.5 0.5 0.5 1</diffuse>
+          <ambient>1.0 0.25 0.25 1</ambient>
+          <diffuse>1.0 0.25 0.25 1</diffuse>
         </material>
       </visual>
       <collision name="collision">
@@ -25,19 +25,19 @@
         </geometry>
       </collision>
       <inertial>
-        <mass>1</mass>
+        <mass>50</mass>
         <inertia>
-          <ixx>0.083</ixx>
+          <ixx>0.00083</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.083</iyy>
+          <iyy>0.00083</iyy>
           <iyz>0</iyz>
-          <izz>0.083</izz>
+          <izz>0.00083</izz>
         </inertia>
       </inertial>
     </link>
 
-    <!-- Rod link -->
+    <!-- Rod link, small mass on purpose -->
     <link name="rod_link">
       <pose>0 0 0.29 0 0 0</pose> <!-- Position the rod on top of the cuboid -->
       <visual name="rod_visual">
@@ -61,7 +61,7 @@
         </geometry>
       </collision>
       <inertial>
-        <mass>0.1</mass>
+        <mass>0.01</mass>
         <inertia>
           <ixx>0.00083</ixx>
           <ixy>0</ixy>
