@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="lander">
+    <pose>0 0 0 0 0 0</pose>
+
+    <!-- Radio box, high mass and small inertia so it doesn't fall over easily -->
+    <link name="cuboid_link">
+      <pose>0 0 0.24 0 0 0</pose> <!-- Position the cuboid on the ground -->
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.4 0.68 0.48</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.85 1</ambient>
+          <diffuse>0.1 0.1 0.85 1</diffuse>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.4 0.68 0.48</size>
+          </box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>50</mass>
+        <inertia>
+          <ixx>0.00083</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00083</iyy>
+          <iyz>0</iyz>
+          <izz>0.00083</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Rod link, small mass on purpose -->
+    <link name="rod_link">
+      <pose>0 0 0.58 0 0 0</pose> <!-- Position the rod on top of the cuboid -->
+      <visual name="rod_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.1</radius>
+            <length>0.2</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.25 0.25 0.25 1</ambient>
+          <diffuse>0.25 0.25 0.25 1</diffuse>
+        </material>
+      </visual>
+      <collision name="rod_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.1</radius>
+            <length>0.2</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.00083</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00083</iyy>
+          <iyz>0</iyz>
+          <izz>0.00083</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Joint to connect the cuboid and the rod -->
+    <joint name="cuboid_rod_joint" type="fixed">
+      <parent>cuboid_link</parent>
+      <child>rod_link</child>
+    </joint>
+
+
+    <!-- odometry plugin which publishes the position of the radio box -->
+    <plugin
+      filename="libignition-gazebo-odometry-publisher-system.so"
+      name="ignition::gazebo::systems::OdometryPublisher">
+      <dimensions>3</dimensions>
+      <odom_publish_frequency>10.0</odom_publish_frequency>
+      <odom_topic>Lander/odom</odom_topic>
+      <odom_frame>map</odom_frame>
+      <!-- <robot_base_frame>base_link</robot_base_frame> -->
+    </plugin>
+  </model>
+</sdf>
