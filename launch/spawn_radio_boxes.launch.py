@@ -1,10 +1,11 @@
 import os
+import sys
 import yaml
 import xml.etree.ElementTree as ET
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, DeclareLaunchArgument, OpaqueFunction
+from launch.actions import ExecuteProcess
 import numpy as np
 
 
@@ -26,34 +27,6 @@ def get_quaternion_from_euler(roll, pitch, yaw):
     return [qx, qy, qz, qw]
 
 
-# Parameter type mapping to infer the correct data type from the cli string
-CLI_PARAM_MAPPING = {
-    'name': str,
-    'sdf_file': str,
-    'world': str,
-    'x': float,
-    'y': float,
-    'z': float,
-    'roll': float,
-    'pitch': float,
-    'yaw': float,
-}
-
-
-def overwrite_yaml_params_from_cli(yaml_params, cli_params):
-    print('Overwriting yaml parameters with command line parameters')
-    for key, value in cli_params.items():
-        if key in yaml_params and value != '':
-            # Since all parameters from cli in ROS2 are strings, we need to infer the correct data type
-            yaml_params[key] = CLI_PARAM_MAPPING[key](value)
-            # Overwrite the boolean values since they are not correctly parsed, non empty strings are always True
-            if value == 'true' or value == 'True':
-                yaml_params[key] = True
-            elif value == 'false' or value == 'False':
-                yaml_params[key] = False
-    return yaml_params
-
-
 def namespace_sdf_file(sdf_path, namespace):
     tree = ET.parse(sdf_path)
     for plugin in tree.findall('model'):
@@ -72,7 +45,6 @@ def spawn_model_process(ign_service_name, sdf_path, model_name, x, y, z, qx, qy,
 
     cmd_string_list = ['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
                        'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
-    command_string = ' '.join(cmd_string_list)
 
     process = ExecuteProcess(
         cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
@@ -81,14 +53,23 @@ def spawn_model_process(ign_service_name, sdf_path, model_name, x, y, z, qx, qy,
     return process
 
 
-def launch_setup(context):
-    print('spawning radio boxes in rubicon world')
+def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
-    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_radio_boxes_rubicon.yaml')
+
+    # Simple hack to get the world argument from the command line, see https://answers.ros.org/question/376816/how-to-pass-launch-args-dynamically-during-launch-time/
+    print(f'Set the world (default marsyard2020), e.g. ros2 launch mrg_slam_sim spawn_radio_boxes.launch.py world:=rubicon')
+    print(f'Available worlds: marsyard2020, rubicon')
+    world = 'marsyard2020'
+    for arg in sys.argv:
+        if arg.startswith('world:='):
+            world = arg.split(':=')[1]
+
+    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_radio_boxes_' + world + '.yaml')
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_radio_boxes']['ros__parameters']
-    params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
-    print(yaml.dump(params, sort_keys=False, default_flow_style=False))
+    # print(yaml.dump(params, sort_keys=False, default_flow_style=False))
+
+    print(f'spawning radio boxes in {params["world"]}')
 
     launch_description_list = []
     # spawn the lander in the rubicon world which also publishes odom message for radio navigation
@@ -106,7 +87,7 @@ def launch_setup(context):
     # spawn a radio box for each pose
     base_name = params['radio_box_name']
     for i, pose in enumerate(spawn_poses):
-        print(f'spawning radio box {i} at pose {pose}')
+        print(f'spawning radio box {i + 1} at pose {pose}')
         name = base_name + str(i + 1)
 
         sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['radio_box_sdf_file'])
@@ -121,32 +102,19 @@ def launch_setup(context):
         spawn_process = spawn_model_process(ign_service_name, sdf_path_tmp, name, x, y, z, qx, qy, qz, qw)
         launch_description_list.append(spawn_process)
 
-        # ign_request_args = 'sdf_filename: \"' + sdf_path_tmp + '\"' + ', name: \"' + name + \
-        #     '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
-
-        # cmd_string_list = ['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
-        #                    'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
-        # command_string = ' '.join(cmd_string_list)
-
-        # process = ExecuteProcess(
-        #     cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
-        #          'ignition.msgs.Boolean', '--timeout', '10000', '--req', ign_request_args],
-        #     output='screen')
-        # launch_description_list.append(process)
-
     # create a ros_gz_bridge which creates a config file for the radio boxes on the fly
     ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'radio_boxes_ros_gz_bridge.yaml')
     ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
     launch_description_list.append(ros_gz_bridge)
 
-    return launch_description_list
-
-
-def generate_launch_description():
-    launch_description_list = []
-    for param_name, _ in CLI_PARAM_MAPPING.items():
-        launch_description_list.append(DeclareLaunchArgument(param_name, default_value='', description=''))
-    launch_description_list.append(OpaqueFunction(function=launch_setup))
-
     return LaunchDescription(launch_description_list)
+
+
+# def generate_launch_description():
+#     launch_description_list = []
+#     for param_name, _ in CLI_PARAM_MAPPING.items():
+#         launch_description_list.append(DeclareLaunchArgument(param_name, default_value='', description=''))
+#     launch_description_list.append(OpaqueFunction(function=launch_setup))
+
+#     return LaunchDescription(launch_description_list)
