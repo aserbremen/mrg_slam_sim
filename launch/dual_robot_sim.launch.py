@@ -1,5 +1,6 @@
 import os
 
+import sys
 import yaml
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
@@ -18,7 +19,15 @@ def booleans_to_strings_in_dict(dictionary):
 def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
 
-    sim_config_path = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_sim.yaml')
+    # Simple hack to get the world argument from the command line, see https://answers.ros.org/question/376816/how-to-pass-launch-args-dynamically-during-launch-time/
+    print(f'Set the world (default marsyard2020), e.g. ros2 launch mrg_slam_sim dual_robot_sim.launch.py world:=rubicon')
+    print(f'Available worlds: rubicon, marsyard2020')
+    world = 'marsyard2020'
+    for arg in sys.argv:
+        if arg.startswith('world:='):
+            world = arg.split(':=')[1]
+
+    sim_config_path = os.path.join(mrg_slam_sim_share_dir, 'config', 'dual_robot_' + world + '_sim.yaml')
     with open(sim_config_path, 'r') as f:
         sim_config = yaml.safe_load(f)
         print(yaml.dump(sim_config, sort_keys=False, default_flow_style=False))

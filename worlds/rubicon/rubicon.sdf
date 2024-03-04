@@ -1,0 +1,51 @@
+<sdf version="1.6">
+  <world name="rubicon">
+    
+    <scene>
+      <ambient>.4 .4 .4</ambient>
+      <sky></sky>
+    </scene>
+
+    <!-- Load the physics plugin -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin
+      filename="libignition-gazebo-physics-system.so"
+      name="ignition::gazebo::systems::Physics">
+    </plugin>
+
+    <!-- User commands plugin -->
+    <plugin
+      filename="libignition-gazebo-user-commands-system.so"
+      name="ignition::gazebo::systems::UserCommands">
+    </plugin>
+
+    <!-- Scene broadcaster plugin -->
+    <plugin
+      filename="libignition-gazebo-scene-broadcaster-system.so"
+      name="ignition::gazebo::systems::SceneBroadcaster">
+    </plugin>
+
+    <!-- Sensor (LIDAR) plugin -->
+    <plugin
+      filename="libignition-gazebo-sensors-system.so"
+      name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- Sensor (IMU) plugin -->
+    <plugin
+      filename="libignition-gazebo-imu-system.so"
+      name="ignition::gazebo::systems::Imu">
+    </plugin>
+
+    <include>
+      <name>Rubicon</name>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Rubicon</uri>
+    </include>
+
+  </world>
+</sdf>
