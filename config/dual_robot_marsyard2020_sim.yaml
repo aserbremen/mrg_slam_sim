@@ -6,8 +6,8 @@ spawn_robot_1:
     use_imu: true
     # start pose of the robot (atlas) in the world -7.0 0.0 3.96 0.0 0.0 0.0
     x: "-15.0"
-    y: "-13.0"
-    z: "1.4"
+    y: "13.0"
+    z: "1.2"
     roll: "0.0"
     pitch: "0.0"
     yaw: "0.0"
@@ -18,12 +18,12 @@ spawn_robot_2:
     sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf" # path to the sdf file in the share folder of the package
     world: "leo_marsyard" # name of the world in which the robot should be spawned
     use_imu: true
-    x: "9.5"
-    y: "9.3"
-    z: "1.0"
+    x: "-15.0"
+    y: "-13.0"
+    z: "1.2"
     roll: "0.0"
     pitch: "0.0"
-    yaw: "3.141"
+    yaw: "0.0"
 
 teleop_joy:
   ros__parameters:

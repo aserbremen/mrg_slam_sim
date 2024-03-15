@@ -68,11 +68,10 @@ def generate_launch_description():
                 )
             ]
         )
-    else:
-        # Alternatively you can control the robot with the keyboard using the following command in a new terminal
-        print('Teleop is disabled, you can control the robot with the keyboard using the following command in a new terminal')
-        print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_atlas -r /cmd_vel:=/atlas/cmd_vel')
-        print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_bestla -r /cmd_vel:=/bestla/cmd_vel')
+
+    print('If you want to control the robot with the keyboard, run the following commands in a new terminal')
+    print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_atlas -r /cmd_vel:=/atlas/cmd_vel')
+    print('ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleop_twist_keyboard_node_bestla -r /cmd_vel:=/bestla/cmd_vel')
 
     launch_list = [spawn_robot_1, spawn_robot_2, ros_gz_bridge]
     if teleop_joy_params['enable_teleop_joy']:
