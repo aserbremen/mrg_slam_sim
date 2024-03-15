@@ -15,7 +15,10 @@ sudo apt install ros-humble-ros-gz
 
 ## Usage
 
-The demo explained in this section can be checked out in this video: [Multi-Robot Graph SLAM using LIDAR](https://www.youtube.com/watch?v=wFmfrwv5CcU&ab_channel=AndreasSerov)
+The demo explained in this section can be checked out in this video on youtube: 
+<a href="https://www.youtube.com/watch?v=wFmfrwv5CcU&t=3s&ab_channel=AndreasSerov" title="Multi-Robot Graph SLAM using LIDAR">
+  <img src="https://i3.ytimg.com/vi/wFmfrwv5CcU/maxresdefault.jpg" alt="mrg_slam" width="720" />
+</a>
 
 Launch the world in gazebo with the following command. Note that the first call to gazebo might take a while, since it has to download the models of the fortress.
 
