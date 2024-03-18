@@ -8,15 +8,15 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
-    ros_gz_sim_share_dir = get_package_share_directory('ros_gz_sim')
+    ros_gz_sim_share_dir = get_package_share_directory('ros_ign_gazebo')
 
     gz_args = os.path.join(mrg_slam_sim_share_dir, 'worlds', 'marsyard2020', 'marsyard2020.sdf')
     gz_args += " -v 4"
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(ros_gz_sim_share_dir, 'launch', 'gz_sim.launch.py')
+            os.path.join(ros_gz_sim_share_dir, 'launch', 'ign_gazebo.launch.py')
         ),
-        launch_arguments={'gz_args': gz_args}.items(),
+        launch_arguments={'ign_args': gz_args ,'ign_version': '6'}.items(),
     )
 
     return LaunchDescription([gz_sim])
