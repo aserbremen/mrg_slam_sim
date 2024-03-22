@@ -6,7 +6,7 @@ spawn_robot_1:
     use_imu: true
     # start pose of the robot (atlas) in the world -7.0 0.0 3.96 0.0 0.0 0.0
     x: "-15.0"
-    y: "13.0"
+    y: "13.5"
     z: "1.2"
     roll: "0.0"
     pitch: "0.0"
