@@ -80,7 +80,7 @@ def namespace_sdf_file(sdf_path, params):
             ignition_frame_id.text = namespace + '/velodyne'
         if sensor.attrib['name'] == 'imu_sensor' and params['use_imu']:
             # Set always on for the imu sensor to true
-            sensor.find('always_on').text = '1'
+            sensor.find('always_on').text = '0'
             # Give the imu sensor a unique topic name
             sensor.find('topic').text = namespace + '/imu/data'
             # Create the ignition frame id for the imu sensor and make it unique

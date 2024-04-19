@@ -22,5 +22,12 @@
         </geometry>
       </visual>
     </link>
+
+      <!-- imu pugin -->
+      <plugin 
+        filename="libignition-gazebo-imu-system.so"
+        name="ignition::gazebo::systems::Imu">
+      </plugin>
+  
   </model>
 </sdf>
