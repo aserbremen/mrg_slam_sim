@@ -1,0 +1,45 @@
+# Full set of configurations
+- ros_topic_name: "atlas/velodyne_points"
+  gz_topic_name: "atlas/laser_scan/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  # subscriber_queue: 5
+  # publisher_queue: 6
+  # lazy: true
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/imu/data"
+  gz_topic_name: "atlas/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/odom_ground_truth"
+  gz_topic_name: "atlas/odom_ground_truth"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/cmd_vel"
+  gz_topic_name: "atlas/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
+  direction: ROS_TO_GZ
+
+- ros_topic_name: "clock"
+  gz_topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  # subscriber_queue: 10
+  # publisher_queue: 20
+  # lazy: false
+  direction: GZ_TO_ROS
