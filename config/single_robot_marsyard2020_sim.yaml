@@ -1,6 +1,6 @@
 spawn_robot:
   ros__parameters:
-    robot_name: "atlas" # name of the robot, certain topic names are namespaced with this name
+    robot_name: "" # name of the robot, certain topic names are namespaced with this name
     sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf" # path to the sdf file in the share folder of the package
     world: "leo_marsyard" # name of the world in which the robot should be spawned
     use_imu: true
@@ -17,5 +17,5 @@ teleop_joy:
     enable_teleop_joy: true
     joy_config: "xbox" # "xbox" or "ps3"
     joy_dev: "/dev/input/js0" # joystick device
-    cmd_vel_topic: "atlas/cmd_vel" # topic to publish the cmd_vel to
-    joy_topic: "atlas/joy" # topic to subscribe to for the joystick input
+    cmd_vel_topic: "cmd_vel" # topic to publish the cmd_vel to, gets namespaced with the robot_name
+    joy_topic: "joy" # topic to subscribe to for the joystick input, gets namespaced with the robot_name

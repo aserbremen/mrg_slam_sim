@@ -1,6 +1,6 @@
-# Full set of configurations
-- ros_topic_name: "atlas/velodyne_points"
-  gz_topic_name: "atlas/laser_scan/points"
+# Full set of configurations, all topics might be namespaced depending on robot_name
+- ros_topic_name: "velodyne_points"
+  gz_topic_name: "laser_scan/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
   gz_type_name: "ignition.msgs.PointCloudPacked"
   # subscriber_queue: 5
@@ -8,8 +8,8 @@
   # lazy: true
   direction: GZ_TO_ROS
 
-- ros_topic_name: "atlas/imu/data"
-  gz_topic_name: "atlas/imu/data"
+- ros_topic_name: "imu/data"
+  gz_topic_name: "imu/data"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "ignition.msgs.IMU"
   # subscriber_queue: 10
@@ -17,8 +17,8 @@
   # lazy: false
   direction: GZ_TO_ROS
 
-- ros_topic_name: "atlas/odom_ground_truth"
-  gz_topic_name: "atlas/odom_ground_truth"
+- ros_topic_name: "odom_ground_truth"
+  gz_topic_name: "odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   # subscriber_queue: 10
@@ -26,8 +26,8 @@
   # lazy: false
   direction: GZ_TO_ROS
 
-- ros_topic_name: "atlas/cmd_vel"
-  gz_topic_name: "atlas/cmd_vel"
+- ros_topic_name: "cmd_vel"
+  gz_topic_name: "cmd_vel"
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "ignition.msgs.Twist"
   # subscriber_queue: 10

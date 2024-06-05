@@ -282,6 +282,7 @@
 
       <sensor name="front_laser" type="gpu_lidar">
         <topic>laser_scan</topic>
+        <ignition_frame_id>velodyne</ignition_frame_id>
         <visualize>0</visualize>
         <update_rate>10</update_rate>
         <lidar>
@@ -353,6 +354,7 @@
         <always_on>0</always_on>
         <update_rate>100</update_rate>
         <topic>imu/data</topic>
+        <ignition_frame_id>base_link</ignition_frame_id>
         <imu>
           <enable_orientation>0</enable_orientation>
           <angular_velocity>
@@ -736,7 +738,7 @@
       name="ignition::gazebo::systems::OdometryPublisher">
       <dimensions>3</dimensions>
       <odom_publish_frequency>100.0</odom_publish_frequency>
-      <odom_topic>odom</odom_topic>
+      <odom_topic>odom_ground_truth</odom_topic>
       <odom_frame>map</odom_frame>
       <robot_base_frame>base_link</robot_base_frame>
     </plugin>

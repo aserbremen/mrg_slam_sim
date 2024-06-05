@@ -1,6 +1,7 @@
 import os
 import yaml
 import xml.etree.ElementTree as ET
+import copy
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
@@ -69,23 +70,21 @@ def namespace_sdf_file(sdf_path, params):
             plugin.find('robot_base_frame').text = namespace + '/base_link'
         # Give a unique topic name for odometry ground truth
         odom_topic = plugin.find('odom_topic')
-        if odom_topic is not None and odom_topic.text == 'odom':
+        if odom_topic is not None and odom_topic.text == 'odom_ground_truth':
             plugin.find('odom_topic').text = namespace + '/odom_ground_truth'
     for sensor in tree.findall('model/link/sensor'):
         if sensor.attrib['name'] == 'front_laser':
             # Give the laser scan points a unique topic name
             sensor.find('topic').text = namespace + '/laser_scan'
             # Create the ignition frame id for the laser scan and make it unique
-            ignition_frame_id = ET.SubElement(sensor, 'ignition_frame_id')
-            ignition_frame_id.text = namespace + '/velodyne'
+            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
         if sensor.attrib['name'] == 'imu_sensor' and params['use_imu']:
             # Set always on for the imu sensor to true
             sensor.find('always_on').text = '0'
             # Give the imu sensor a unique topic name
             sensor.find('topic').text = namespace + '/imu/data'
             # Create the ignition frame id for the imu sensor and make it unique
-            ignition_frame_id = ET.SubElement(sensor, 'ignition_frame_id')
-            ignition_frame_id.text = namespace + '/base_link'
+            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
 
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
@@ -96,29 +95,34 @@ def launch_setup(context):
     config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_robot.yaml')
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_robot']['ros__parameters']
+    print(f'context.launch_configurations: {context.launch_configurations}')
     params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
+    # we only overwrite non empty parameters, however robot_name can be empty if no namespace is desired
+    robot_name = context.launch_configurations['robot_name']
+    params['robot_name'] = robot_name
     print(yaml.dump(params, sort_keys=False, default_flow_style=False))
 
-    robot_name = params['robot_name']
     sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['sdf_file'])
-    # We create a temporary sdf file to namespace the cmd_vel and laser scan topics for use with multiple robots
-    sdf_path_tmp = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
-    os.system(f'cp {sdf_path} {sdf_path_tmp}')
-
-    namespace_sdf_file(sdf_path_tmp, params)
+    sdf_path_final = copy.deepcopy(sdf_path)
+    if robot_name != '':
+        # We overwrite the final sdf file to namespace all relevant topics
+        sdf_path_final = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
+        os.system(f'cp {sdf_path} {sdf_path_final}')
+        namespace_sdf_file(sdf_path_final, params)
 
     ign_service_name = '/world/' + params['world'] + '/create'
 
     x, y, z = params['x'], params['y'], params['z']
     qx, qy, qz, qw = get_quaternion_from_euler(params['roll'], params['pitch'], params['yaw'])
 
-    ign_request_args = 'sdf_filename: \"' + sdf_path_tmp + '\"' + ', name: \"' + params['robot_name'] + \
+    ign_request_args = 'sdf_filename: \"' + sdf_path_final + '\"' + ', name: \"' + params['robot_name'] + \
         '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
 
     cmd_string_list = ['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
                        'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
-    command_string = ' '.join(cmd_string_list)
 
+    print(f'executing command: {cmd_string_list}')
+    command_string = ' '.join(cmd_string_list)
     process = ExecuteProcess(
         cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
              'ignition.msgs.Boolean', '--timeout', '10000', '--req', ign_request_args],
