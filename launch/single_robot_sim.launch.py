@@ -89,6 +89,9 @@ def generate_launch_description():
 
     if teleop_joy_params['enable_teleop_joy']:
         # Define the teleop node
+        if model_namespace != '':
+            teleop_joy_params['cmd_vel_topic'] = model_namespace + '/' + teleop_joy_params['cmd_vel_topic']
+            teleop_joy_params['joy_topic'] = model_namespace + '/' + teleop_joy_params['joy_topic']
         teleop_joy_node = GroupAction(
             actions=[
                 SetRemap(src='/cmd_vel', dst=teleop_joy_params['cmd_vel_topic']),
