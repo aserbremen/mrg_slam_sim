@@ -13,7 +13,7 @@ This package depends on the following packages:
 sudo apt install ros-humble-ros-gz
 ```
 
-## Usage marsyard2020 environment
+## Usage for two robots in the marsyard2020 environment
 
 The demo explained in this section can be checked out in this video on youtube: 
 <a href="https://www.youtube.com/watch?v=wFmfrwv5CcU&t=3s&ab_channel=AndreasSerov" title="Multi-Robot Graph SLAM using LIDAR">
@@ -72,9 +72,17 @@ rviz2 -d /path/to/mrg_slam/rviz/mrg_slam.rviz --ros-args -p use_sime_time:=true
 
 ## Additional use cases
 
-### Launch the world with a single robot
+### Simulate a single robot without a namespace / robot name
 
-After launching the gazebo world in step 1 above, you can spawn a single robot in case you want to test the Multi-Robot Graph SLAM Framework with a single robot. This will use less resources for the simulation.
+Many packages use hard-coded frames like `/base_link` or `/odom`. If you want to test the Multi-Robot Graph SLAM Framework with a single robot without a namespace, you can use the [single_robot_sim.launch.py](launch/single_robot_sim.launch.py) launch file. After launching the gazebo world in step 1 above, you can spawn a single robot. 
+
+```
+ros2 launch mrg_slam_sim single_robot_sim.launch.py
+```
+
+### Simulate a single robot with a namespace / robot name
+
+If you want to test the Multi-Robot Graph SLAM Framework with a single robot with a namespace, you need to set the `robot_name` parameter in the [single_robot_marsyard2020_sim.yaml](config/single_robot_marsyard2020_sim.yaml) file. After launching the gazebo world in step 1 above, you can spawn a single robot with a namespace.
 
 ```
 ros2 launch mrg_slam_sim single_robot_sim.launch.py
