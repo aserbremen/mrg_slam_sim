@@ -52,15 +52,15 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __node:=teleo
 Now to test the Multi-Robot Graph SLAM Framework with the [mrg_slam](https://github.com/aserbremen/mrg_slam) package. Run two instances of the slam algorithm as follows:
 
 ```
-ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=atlas x:=-15.0 y:=13.5 z:=1.2 # terminal 1
-ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=bestla x:=-15.0 y:=-13.0 z:=1.2 # terminal 2
+ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=atlas x:=-15.0 y:=13.5 z:=1.1 # terminal 1
+ros2 launch mrg_slam mrg_slam.launch.py model_namespace:=bestla x:=-15.0 y:=-13.0 z:=1.1 # terminal 2
 ```
 
 Or use two instances of Multi-Robot Graph SLAM inside two docker containers. Make sure that the docker containers can communicate with the host machine. For example, environment variables like ROS_LOCALHOST_ONLY or ROS_DOMAIN_ID should not be set or should be correctly set. Then run the following commands:
 
 ``` 
-docker run -it --rm --network=host --ipc=host --pid=host -e MODEL_NAMESPACE=atlas -e USE_SIM_TIME=true -e X=-15.0 -e Y=13.5 -e Z=1.2 --name atlas_slam mrg_slam # terminal 1
-docker run -it --rm --network=host --ipc=host --pid=host -e MODEL_NAMESPACE=bestla -e USE_SIM_TIME=true -e X=-15.0 -e Y=-13.0 -e Z=1.2 --name bestla_slam mrg_slam # terminal 2
+docker run -it --rm --network=host --ipc=host --pid=host -e MODEL_NAMESPACE=atlas -e USE_SIM_TIME=true -e X=-15.0 -e Y=13.5 -e Z=1.1 --name atlas_slam mrg_slam # terminal 1
+docker run -it --rm --network=host --ipc=host --pid=host -e MODEL_NAMESPACE=bestla -e USE_SIM_TIME=true -e X=-15.0 -e Y=-13.0 -e Z=1.1 --name bestla_slam mrg_slam # terminal 2
 ```
 
 ### 5. Visualize the results in rviz2
@@ -86,6 +86,14 @@ If you want to test the Multi-Robot Graph SLAM Framework with a single robot wit
 
 ```
 ros2 launch mrg_slam_sim single_robot_sim.launch.py
+```
+
+### Launch the world with any number of robots
+
+Check out the [config/multi_robot_sim.yaml](config/multi_robot_sim.yaml) file to set the robot_names, the initial poses, and the topics to bridge from gazebo to ROS2. Then you can spawn any number of robots and start bridging topics using the following command:
+
+```
+ros2 launch mrg_slam_sim multi_robot_sim.launch.py
 ```
 
 ### Launch other worlds

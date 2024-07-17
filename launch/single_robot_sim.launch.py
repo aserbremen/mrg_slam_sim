@@ -74,7 +74,6 @@ def generate_launch_description():
     )
     # transform all booleans to string, IncldueLaunchDescription does not support booleans
     booleans_to_strings_in_dict(spawn_robot_params)
-    print(f'spawn_robot_params: {spawn_robot_params}')
     spawn_robot = IncludeLaunchDescription(
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params.items(),

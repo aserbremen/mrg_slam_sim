@@ -95,7 +95,6 @@ def launch_setup(context):
     config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_robot.yaml')
     with open(config_file, 'r') as f:
         params = yaml.safe_load(f)['spawn_robot']['ros__parameters']
-    print(f'context.launch_configurations: {context.launch_configurations}')
     params = overwrite_yaml_params_from_cli(params, context.launch_configurations)
     # we only overwrite non empty parameters, however robot_name can be empty if no namespace is desired
     robot_name = context.launch_configurations['robot_name']
@@ -122,7 +121,6 @@ def launch_setup(context):
                        'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
 
     print(f'executing command: {cmd_string_list}')
-    command_string = ' '.join(cmd_string_list)
     process = ExecuteProcess(
         cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
              'ignition.msgs.Boolean', '--timeout', '10000', '--req', ign_request_args],
