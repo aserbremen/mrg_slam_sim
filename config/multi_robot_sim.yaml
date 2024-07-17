@@ -4,7 +4,7 @@ sim:
     world: "leo_marsyard" # options are "leo_marsyard" and "rubicon"
     use_sim_time: true
     # robot names are used for the ros topics for the spawn and the bridge
-    robot_names: ["", "atlas", "bestla", "costar"]
+    robot_names: ["", "atlas", "bestla"]
     # start poses of the robots in the world
     init_poses: [
       {x: 15.4, y: 9.6, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 1.5708},
@@ -28,8 +28,6 @@ sim:
         # imu/data: imu/data
         odom_ground_truth: odom_ground_truth
         cmd_vel: cmd_vel
-      - clock: clock
-        ros_gz_bridge_gz_topics: asdf
 
 teleop_joy:
   ros__parameters:
