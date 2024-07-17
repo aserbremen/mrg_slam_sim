@@ -1,0 +1,87 @@
+# Full set of configurations
+# you can also set the subscriber_queue, publisher_queue, and lazy parameters, which are optional.
+
+# This file is mainly a placeholder for the share directory of the package
+# The actual configuration is done in the launch file depending on the robot names
+
+- ros_topic_name: "clock"
+  gz_topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "ignition.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# no namespace
+- ros_topic_name: "velodyne_points"
+  gz_topic_name: "laser_scan/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "imu/data"
+  gz_topic_name: "imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "odom_ground_truth"
+  gz_topic_name: "odom_ground_truth"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "cmd_vel"
+  gz_topic_name: "cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# atlas robot 
+- ros_topic_name: "atlas/velodyne_points"
+  gz_topic_name: "atlas/laser_scan/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/imu/data"
+  gz_topic_name: "atlas/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/odom_ground_truth"
+  gz_topic_name: "atlas/odom_ground_truth"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "atlas/cmd_vel"
+  gz_topic_name: "atlas/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# bestla robot
+- ros_topic_name: "bestla/velodyne_points"
+  gz_topic_name: "bestla/laser_scan/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "ignition.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "bestla/imu/data"
+  gz_topic_name: "bestla/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "ignition.msgs.IMU"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "bestla/odom_ground_truth"
+  gz_topic_name: "bestla/odom_ground_truth"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "bestla/cmd_vel"
+  gz_topic_name: "bestla/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+
