@@ -4,7 +4,7 @@ import sys
 import yaml
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch_ros.actions import Node, SetRemap
+from launch_ros.actions import SetRemap
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
