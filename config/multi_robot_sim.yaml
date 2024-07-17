@@ -13,8 +13,9 @@ sim:
     ]
     # The gz_topic_name are fixed, the ros topic names can be given, clock is always bridged
     # Available gz topic names per robot (prepended by robot_name): laser_scan/points, imu/data, odom_ground_truth, cmd_vel
-    # If a ros_topic is not given, the gz_topic is not bridged
+    # If a ros_topic is not given or commented, the gz_topic is not bridged
     # Note that the ros_gz_bridge_ros_topics will be prepended by the robot_name for gazebo and ros respectively
+    # The prepending is done in order of the robot_names list
     ros_gz_bridge_ros_topics: 
       - laser_scan/points: velodyne_points
         # imu/data: imu/data
