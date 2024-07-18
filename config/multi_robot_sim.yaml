@@ -7,7 +7,7 @@ sim:
     robot_names: ["", "atlas", "bestla"]
     # start poses of the robots in the world
     init_poses: [
-      {x: 15.4, y: 9.6, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 1.5708},
+      {x: 15.4, y: 9.6, z: 1.15, roll: 0.0, pitch: 0.0, yaw: -1.5708},
       {x: -15.0, y: 13.5, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0},
       {x: -15.0, y: -13.0, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0}
     ]
@@ -42,7 +42,7 @@ teleop_joy:
 
 # usable init poses for world "leo_marsyard"
 # init_poses: [
-#   {x: 11.5, y: 11.0, z: 1.3, roll: 0.0, pitch: 0.0, yaw: 1.5708},
+#   {x: 11.5, y: 11.0, z: 1.3, roll: 0.0, pitch: 0.0, yaw: -1.5708},
 #   {x: -15.0, y: 13.5, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0},
 #   {x: -15.0, y: -13.0, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0}
 # ]
