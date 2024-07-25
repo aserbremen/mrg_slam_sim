@@ -1,7 +1,7 @@
 sim:
   ros__parameters:
     sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf"
-    world: "leo_marsyard" # options are "leo_marsyard" and "rubicon"
+    world: "marsyard2020" # options are "marsyard2020" and "rubicon"
     use_sim_time: true
     # robot names are used for the ros topics for the spawn and the bridge
     robot_names: ["", "atlas", "bestla"]
@@ -40,7 +40,7 @@ teleop_joy:
     joy_topic: "atlas/joy" # topic to subscribe to for the joystick input
 
 
-# usable init poses for world "leo_marsyard"
+# usable init poses for world "marsyard2020"
 # init_poses: [
 #   {x: 11.5, y: 11.0, z: 1.3, roll: 0.0, pitch: 0.0, yaw: -1.5708},
 #   {x: -15.0, y: 13.5, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0},
