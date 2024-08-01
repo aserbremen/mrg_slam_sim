@@ -1,4 +1,7 @@
 # Full set of configurations
+# you can also set the subscriber_queue, publisher_queue, and lazy parameters, which are optional.
+
+# atlas robot
 - ros_topic_name: "atlas/velodyne_points"
   ign_topic_name: "atlas/laser_scan/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
@@ -35,6 +38,7 @@
   # lazy: false
   direction: ROS_TO_IGN
 
+# bestla robot
 - ros_topic_name: "bestla/velodyne_points"
   ign_topic_name: "bestla/laser_scan/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
@@ -79,3 +83,4 @@
   # publisher_queue: 20
   # lazy: false
   direction: IGN_TO_ROS
+

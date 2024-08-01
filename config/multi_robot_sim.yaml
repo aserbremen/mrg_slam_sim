@@ -1,0 +1,53 @@
+sim:
+  ros__parameters:
+    sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf"
+    world: "marsyard2020" # options are "marsyard2020" and "rubicon"
+    use_sim_time: true
+    # robot names are used for the ros topics for the spawn and the bridge
+    robot_names: ["", "atlas", "bestla"]
+    # start poses of the robots in the world
+    init_poses: [
+      {x: 15.4, y: 9.6, z: 1.15, roll: 0.0, pitch: 0.0, yaw: -1.5708},
+      {x: -15.0, y: 13.5, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0},
+      {x: -15.0, y: -13.0, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0}
+    ]
+    # The gz_topic_name are fixed, the ros topic names can be given, clock is always bridged
+    # Available gz topic names per robot (prepended by robot_name): laser_scan/points, imu/data, odom_ground_truth, cmd_vel
+    # If a ros_topic is not given or commented, the gz_topic is not bridged
+    # Note that the ros_gz_bridge_ros_topics will be prepended by the robot_name for gazebo and ros respectively
+    # The prepending is done in order of the robot_names list
+    ros_gz_bridge_ros_topics: 
+      - laser_scan/points: velodyne_points
+        # imu/data: imu/data
+        odom_ground_truth: odom_ground_truth
+        cmd_vel: cmd_vel
+      - laser_scan/points: velodyne_points
+        # imu/data: imu/data
+        odom_ground_truth: odom_ground_truth
+        cmd_vel: cmd_vel
+      - laser_scan/points: velodyne_points
+        # imu/data: imu/data
+        odom_ground_truth: odom_ground_truth
+        cmd_vel: cmd_vel
+
+teleop_joy:
+  ros__parameters:
+    enable_teleop_joy: true # otherwise use the teleop_twist_keyboard
+    namespace: "atlas" # namespace of the robot
+    joy_config: "xbox" # "xbox" or "ps3"
+    joy_dev: "/dev/input/js0" # joystick device
+    cmd_vel_topic: "atlas/cmd_vel" # topic to publish the cmd_vel to
+    joy_topic: "atlas/joy" # topic to subscribe to for the joystick input
+
+
+# usable init poses for world "marsyard2020"
+# init_poses: [
+#   {x: 11.5, y: 11.0, z: 1.3, roll: 0.0, pitch: 0.0, yaw: -1.5708},
+#   {x: -15.0, y: 13.5, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0},
+#   {x: -15.0, y: -13.0, z: 1.1, roll: 0.0, pitch: 0.0, yaw: 0.0}
+# ]
+# usable init poses for world "rubicon"
+# init_poses: [
+#   {x: -7.0, y: 0.0, z: 3.96, roll: 0.0, pitch: 0.0, yaw: 0.0},
+#   {x: 0.0, y: -15.0, z: 3.8, roll: 0.0, pitch: 0.0, yaw: 0.0}
+# ]

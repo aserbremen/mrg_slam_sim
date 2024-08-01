@@ -53,21 +53,13 @@ def spawn_model_process(ign_service_name, sdf_path, model_name, x, y, z, qx, qy,
     return process
 
 
+# This launch file spawns a lander and radio boxes in the simulation world and the corresponding ros_gz_bridge
 def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
-
-    # Simple hack to get the world argument from the command line, see https://answers.ros.org/question/376816/how-to-pass-launch-args-dynamically-during-launch-time/
-    print(f'Set the world (default marsyard2020), e.g. ros2 launch mrg_slam_sim spawn_radio_boxes.launch.py world:=rubicon')
-    print(f'Available worlds: marsyard2020, rubicon')
-    world = 'marsyard2020'
-    for arg in sys.argv:
-        if arg.startswith('world:='):
-            world = arg.split(':=')[1]
-
-    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'spawn_radio_boxes_' + world + '.yaml')
+    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'radio_boxes_sim.yaml')
     with open(config_file, 'r') as f:
-        params = yaml.safe_load(f)['spawn_radio_boxes']['ros__parameters']
-    # print(yaml.dump(params, sort_keys=False, default_flow_style=False))
+        params = yaml.safe_load(f)['radio_boxes_sim']['ros__parameters']
+        yaml.dump(params, sort_keys=False, default_flow_style=False)
 
     print(f'spawning radio boxes in {params["world"]}')
 
@@ -109,12 +101,3 @@ def generate_launch_description():
     launch_description_list.append(ros_gz_bridge)
 
     return LaunchDescription(launch_description_list)
-
-
-# def generate_launch_description():
-#     launch_description_list = []
-#     for param_name, _ in CLI_PARAM_MAPPING.items():
-#         launch_description_list.append(DeclareLaunchArgument(param_name, default_value='', description=''))
-#     launch_description_list.append(OpaqueFunction(function=launch_setup))
-
-#     return LaunchDescription(launch_description_list)
