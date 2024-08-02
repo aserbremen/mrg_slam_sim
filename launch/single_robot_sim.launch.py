@@ -37,7 +37,7 @@ def namespace_ros_gz_config(ros_gz_config, model_namespace):
         if bridged_msg_dict['ros_topic_name'] == 'clock':
             continue
         bridged_msg_dict['ros_topic_name'] = model_namespace + '/' + bridged_msg_dict['ros_topic_name']
-        bridged_msg_dict['gz_topic_name'] = model_namespace + '/' + bridged_msg_dict['gz_topic_name']
+        bridged_msg_dict['ign_topic_name'] = model_namespace + '/' + bridged_msg_dict['ign_topic_name']
 
     # write the yaml file with the added namespace
     print(f'writing to {ros_gz_config_namespaced}')
@@ -79,12 +79,21 @@ def generate_launch_description():
         launch_arguments=spawn_robot_params.items(),
     )
 
-    # Start the parameter bridge for communication between ROS2 and Ignition Gazebo
-    ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'single_robot_ros_gz_bridge.yaml')
-    if model_namespace != '':
-        ros_gz_config = namespace_ros_gz_config(ros_gz_config, model_namespace)
-    ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
-                                        '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
+    ros_gz_bridge = Node(
+        package='ros_ign_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            "/model/atlas/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
+            "/model/atlas/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V",
+            "/model/atlas/pose@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V"
+        ],
+        remappings=[
+           ("/model/atlas/tf", "/tf"),
+           ("/model/atlas/pose", "/tf"),
+           ("/model/atlas/cmd_vel", "/atlas/cmd_vel")
+        ]
+    )
+
 
     if teleop_joy_params['enable_teleop_joy']:
         # Define the teleop node

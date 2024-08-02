@@ -705,42 +705,28 @@
     </joint>
     <static>0</static>
 
-    <!-- Differential drive plugin for rear wheels -->
+    <!-- Differential drive plugin -->
     <plugin
       filename="libignition-gazebo-diff-drive-system.so"
       name="ignition::gazebo::systems::DiffDrive">
       <left_joint>rear_left_wheel_joint</left_joint>
-      <right_joint>rear_right_wheel_joint</right_joint>
-      <!-- Actual value of husky 0.5708, we use a different value for better steering -->
-      <wheel_separation>0.5708</wheel_separation>
-      <wheel_radius>0.1651</wheel_radius>
-      <odom_publish_frequency>100</odom_publish_frequency>
-      <topic>cmd_vel</topic>
-    </plugin>
-
-    <!-- Differential drive plugin for front wheels -->
-    <plugin
-      filename="libignition-gazebo-diff-drive-system.so"
-      name="ignition::gazebo::systems::DiffDrive">
       <left_joint>front_left_wheel_joint</left_joint>
+      <right_joint>rear_right_wheel_joint</right_joint>
       <right_joint>front_right_wheel_joint</right_joint>
       <!-- Actual value of husky 0.5708, we use a different value for better steering -->
       <wheel_separation>0.5708</wheel_separation>
       <wheel_radius>0.1651</wheel_radius>
-      <odom_publish_frequency>100</odom_publish_frequency>
-      <topic>cmd_vel</topic>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <frame_id>odom</frame_id>
+      <child_frame_id>atlas</child_frame_id>
     </plugin>
 
-    <!-- ground truth odometry plugin -->
-    <!-- TODO, need to consider lidar frame inclination??? -->
-    <plugin
-      filename="libignition-gazebo-odometry-publisher-system.so"
-      name="ignition::gazebo::systems::OdometryPublisher">
-      <dimensions>3</dimensions>
-      <odom_publish_frequency>100.0</odom_publish_frequency>
-      <odom_topic>odom_ground_truth</odom_topic>
-      <odom_frame>map</odom_frame>
-      <robot_base_frame>base_link</robot_base_frame>
+    <plugin name='ignition::gazebo::systems::PosePublisher' filename='libignition-gazebo-pose-publisher-system'>
+      <use_pose_vector_msg>true</use_pose_vector_msg>
+      <publish_nested_model_pose>false</publish_nested_model_pose>
+      <publish_sensor_pose>true</publish_sensor_pose>
+      <publish_link_pose>true</publish_link_pose>
+      <update_frequency>100</update_frequency>
     </plugin>
 
   </model>

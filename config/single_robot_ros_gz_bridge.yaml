@@ -2,31 +2,38 @@
 # you can also set the subscriber_queue, publisher_queue, and lazy parameters, which are optional.
 
 - ros_topic_name: "velodyne_points"
-  gz_topic_name: "laser_scan/points"
+  ign_topic_name: "laser_scan/points"
   ros_type_name: "sensor_msgs/msg/PointCloud2"
-  gz_type_name: "ignition.msgs.PointCloudPacked"
-  direction: GZ_TO_ROS
+  ign_type_name: "ignition.msgs.PointCloudPacked"
+  direction: IGN_TO_ROS
 
 - ros_topic_name: "imu/data"
-  gz_topic_name: "imu/data"
+  ign_topic_name: "imu/data"
   ros_type_name: "sensor_msgs/msg/Imu"
-  gz_type_name: "ignition.msgs.IMU"
-  direction: GZ_TO_ROS
+  ign_type_name: "ignition.msgs.IMU"
+  direction: IGN_TO_ROS
 
 - ros_topic_name: "odom_ground_truth"
-  gz_topic_name: "odom_ground_truth"
+  ign_topic_name: "odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "ignition.msgs.Odometry"
-  direction: GZ_TO_ROS
+  ign_type_name: "ignition.msgs.Odometry"
+  direction: IGN_TO_ROS
 
 - ros_topic_name: "cmd_vel"
-  gz_topic_name: "cmd_vel"
+  ign_topic_name: "cmd_vel"
   ros_type_name: "geometry_msgs/msg/Twist"
-  gz_type_name: "ignition.msgs.Twist"
-  direction: ROS_TO_GZ
+  ign_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_IGN
 
 - ros_topic_name: "clock"
-  gz_topic_name: "clock"
+  ign_topic_name: "clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
-  gz_type_name: "ignition.msgs.Clock"
-  direction: GZ_TO_ROS
+  ign_type_name: "ignition.msgs.Clock"
+  direction: IGN_TO_ROS
+  
+- ros_topic_name: "tf"
+  ign_topic_name: "pose"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  ign_type_name: "ignition.msgs.Pose_V"
+  direction: IGN_TO_ROS
+
