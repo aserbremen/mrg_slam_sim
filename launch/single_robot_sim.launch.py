@@ -83,6 +83,7 @@ def generate_launch_description():
         package='ros_ign_bridge',
         executable='parameter_bridge',
         arguments=[
+            "/atlas/laser_scan/points@sensor_msgs/msg/PointCloud2@ignition.msgs.PointCloudPacked",
             "/model/atlas/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
             "/model/atlas/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V",
             "/model/atlas/pose@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V"

@@ -280,9 +280,8 @@
       <gravity>1</gravity>
       <velocity_decay/> -->
 
-      <sensor name="front_laser" type="gpu_lidar">
-        <topic>laser_scan</topic>
-        <ignition_frame_id>velodyne</ignition_frame_id>
+      <sensor name="velodyne" type="gpu_lidar">
+        <topic>atlas/laser_scan</topic>
         <visualize>0</visualize>
         <update_rate>10</update_rate>
         <lidar>
