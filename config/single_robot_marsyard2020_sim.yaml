@@ -1,10 +1,11 @@
 spawn_robot:
   ros__parameters:
-    robot_name: "" # name of the robot, certain topic names are namespaced with this name
+    robot_name: "atlas" # name of the robot, certain topic names are namespaced with this name
     sdf_file: "COSTAR_HUSKY_SENSOR_CONFIG_REDUCED/model.sdf" # path to the sdf file in the share folder of the package
     world: "marsyard2020" # name of the world in which the robot should be spawned
     use_imu: true
-    # start pose of the robot (atlas) in the world -7.0 0.0 3.96 0.0 0.0 0.0
+    # possible start pose of the robot (atlas) in the rubicon world -7.0 0.0 3.96 0.0 0.0 0.0
+    # possible start pose of the robot (atlas) in the marsyard2020 world -15.0 13.5 1.1 0.0 0.0 0.0
     x: "-15.0"
     y: "13.5"
     z: "1.1"

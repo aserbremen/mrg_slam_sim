@@ -56,35 +56,71 @@ def overwrite_yaml_params_from_cli(yaml_params, cli_params):
     return yaml_params
 
 
-def namespace_sdf_file(sdf_path, params):
+def configure_sdf_file(sdf_path, params):
     namespace = params['robot_name']
+    prefix = namespace + '/' if namespace != '' else ''
+    # Define a mapping of the topics that need to be namespaced or changed in the sdf file
+    plugin_mappings = {
+        # change plugins by name, only use defining name without prepending namespace in order to avoid ign, gz, ros confusion
+        # e.g. 'DiffDrive' for ignition::gazebo::systems::DiffDrive and
+        'DiffDrive': {
+            'frame_id': lambda text: f'{prefix}{text}',
+            'child_frame_id': namespace,
+            'odom_topic': lambda text: f'{prefix}{text}',
+            'tf_topic': lambda text: f'{prefix}{text}',
+            'topic': lambda text: f'{prefix}{text}'
+        },
+        'OdometryPublisher': {
+            'odom_frame': lambda text: f'{prefix}{text}',
+            'robot_base_frame': lambda text: f'{prefix}{text}',
+            'odom_topic': lambda text: f'{prefix}{text}',
+            'tf_topic': lambda text: f'{prefix}{text}'
+        }}
+
+    sensor_mappings = {
+        'velodyne': {
+            'topic': f'{prefix}laser_scan',
+            'ignition_frame_id': lambda text: f'{prefix}{text}'
+        },
+        'imu_sensor': {
+            'always_on': '0',
+            'topic': f'{prefix}imu/data',
+            'ignition_frame_id': lambda text: f'{prefix}{text}'
+        }
+    }
+
     tree = ET.parse(sdf_path)
-    for plugin in tree.findall('model/plugin'):
-        # cmd_vel unique name
-        topic = plugin.find('topic')
-        if topic is not None and topic.text == 'cmd_vel':
-            plugin.find('topic').text = namespace + '/cmd_vel'
-        # Give robot_base_frame (Odometry ground) a unique topic name
-        robot_base_frame = plugin.find('robot_base_frame')
-        if robot_base_frame is not None and robot_base_frame.text == 'base_link':
-            plugin.find('robot_base_frame').text = namespace + '/base_link'
-        # Give a unique topic name for odometry ground truth
-        odom_topic = plugin.find('odom_topic')
-        if odom_topic is not None and odom_topic.text == 'odom_ground_truth':
-            plugin.find('odom_topic').text = namespace + '/odom_ground_truth'
-    for sensor in tree.findall('model/link/sensor'):
-        if sensor.attrib['name'] == 'front_laser':
-            # Give the laser scan points a unique topic name
-            sensor.find('topic').text = namespace + '/laser_scan'
-            # Create the ignition frame id for the laser scan and make it unique
-            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
-        if sensor.attrib['name'] == 'imu_sensor' and params['use_imu']:
-            # Set always on for the imu sensor to true
-            sensor.find('always_on').text = '0'
-            # Give the imu sensor a unique topic name
-            sensor.find('topic').text = namespace + '/imu/data'
-            # Create the ignition frame id for the imu sensor and make it unique
-            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
+
+    if namespace != '':
+        # Add namespace to the model name
+        model = tree.find('.//model')
+        model.attrib['name'] = namespace
+
+    # Apply plugin mappings
+    for plugin in tree.findall('.//plugin'):
+        for element, change in plugin_mappings.items():
+            if element in plugin.attrib['name']:
+                # apply changes to the tree
+                for tag, new_value in change.items():
+                    elem = plugin.find(tag)
+                    if elem is not None:
+                        if callable(new_value):
+                            elem.text = new_value(elem.text)
+                        else:
+                            elem.text = new_value
+
+    # Apply sensor mappings
+    for sensor in tree.findall('.//sensor'):
+        for element, change in sensor_mappings.items():
+            if element in sensor.attrib['name']:
+                # apply changes to the tree
+                for tag, new_value in change.items():
+                    elem = sensor.find(tag)
+                    if elem is not None:
+                        if callable(new_value):
+                            elem.text = new_value(elem.text)
+                        else:
+                            elem.text = new_value
 
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
@@ -103,11 +139,10 @@ def launch_setup(context):
 
     sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['sdf_file'])
     sdf_path_final = copy.deepcopy(sdf_path)
-    if robot_name != '':
-        # We overwrite the final sdf file to namespace all relevant topics
-        sdf_path_final = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
-        os.system(f'cp {sdf_path} {sdf_path_final}')
-        namespace_sdf_file(sdf_path_final, params)
+    # We overwrite the final sdf file to configure it with the correct namespace and start pose for the odom frame
+    sdf_path_final = sdf_path.replace('.sdf', '_' + robot_name + '.sdf')
+    os.system(f'cp {sdf_path} {sdf_path_final}')
+    configure_sdf_file(sdf_path_final, params)
 
     ign_service_name = '/world/' + params['world'] + '/create'
 
