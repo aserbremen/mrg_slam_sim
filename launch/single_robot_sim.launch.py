@@ -11,13 +11,16 @@ import yaml
 
 
 def booleans_to_strings_in_dict(dictionary):
+    result = dictionary.copy()
     for key, value in dictionary.items():
         if isinstance(value, bool):
-            dictionary[key] = str(value)
-    return dictionary
+            result[key] = str(value)
+    return result
 
 
-def namespace_ros_gz_config(ros_gz_config, model_namespace):
+def namespace_ros_gz_config(ros_gz_config, params):
+    model_namespace = params['robot_name']
+    print(f'params: {params}')
     # copy the ros_gz_config to a new file considering namespace and symlink
     ros_gz_config_namespaced = ros_gz_config.replace('.yaml', '_' + model_namespace + '.yaml')  # we return this
     ros_gz_config_real = os.path.realpath(ros_gz_config)
@@ -29,21 +32,30 @@ def namespace_ros_gz_config(ros_gz_config, model_namespace):
         ros_gz_yaml = yaml.safe_load(f)
 
     # add namespace to the topics
+    to_remove = []
     for bridged_msg_dict in ros_gz_yaml:
         if bridged_msg_dict['ros_topic_name'] == 'clock':
             continue
 
         prefix = model_namespace + '/' if model_namespace != '' else ''
-        if bridged_msg_dict['ros_topic_name'] == "tf":
+        if bridged_msg_dict['ros_topic_name'] == "tf" and params['publish_tf_to_ros'] == True:
             prefix = 'model/' + prefix
             bridged_msg_dict['gz_topic_name'] = prefix + bridged_msg_dict['gz_topic_name']
             continue
+        elif bridged_msg_dict['ros_topic_name'] == "tf" and params['publish_tf_to_ros'] == False:
+            # remove the tf messages from the ros_gz_yaml
+            print(f'Removing tf from ros_gz_bridge_config')
+            to_remove.append(bridged_msg_dict)
 
         bridged_msg_dict['ros_topic_name'] = prefix + bridged_msg_dict['ros_topic_name']
         bridged_msg_dict['gz_topic_name'] = prefix + bridged_msg_dict['gz_topic_name']
 
+   # remove the msgs that are not needed
+    for msg in to_remove:
+        ros_gz_yaml.remove(msg)
+
     # write the yaml file with the added namespace
-    print(f'writing to {ros_gz_config_namespaced}')
+    print(f'Writing ros_gz_bridge_config to: {ros_gz_config_namespaced}')
     print(yaml.dump(ros_gz_yaml, sort_keys=False, default_flow_style=False))
     with open(ros_gz_config_namespaced, 'w') as f:
         yaml.dump(ros_gz_yaml, f, sort_keys=False, default_flow_style=False)
@@ -68,16 +80,16 @@ def generate_launch_description():
         os.path.join(mrg_slam_sim_share_dir, 'launch', 'spawn_robot.launch.py')
     )
     # transform all booleans to string, IncldueLaunchDescription does not support booleans
-    booleans_to_strings_in_dict(spawn_robot_params)
+    spawn_robot_string_params = booleans_to_strings_in_dict(spawn_robot_params)
     spawn_robot = IncludeLaunchDescription(
         spawn_robot_python_source,
-        launch_arguments=spawn_robot_params.items(),
+        launch_arguments=spawn_robot_string_params.items(),
     )
 
     # Start the parameter bridge for communication between ROS2 and Ignition Gazebo
     ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'single_robot_ros_gz_bridge.yaml')
     if model_namespace != '':
-        ros_gz_config = namespace_ros_gz_config(ros_gz_config, model_namespace)
+        ros_gz_config = namespace_ros_gz_config(ros_gz_config, spawn_robot_params)
     ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
 
