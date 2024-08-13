@@ -5,55 +5,61 @@
   direction: GZ_TO_ROS
 
 - ros_topic_name: "Lander/gnss_rtk_rel_nav" 
-  gz_topic_name: "Lander/odom"
+  gz_topic_name: "Lander/odom_ground_truth"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "RadioBox0/gnss_rtk_rel_nav" 
+  gz_topic_name: "RadioBox0/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox1/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox1/odom"
+  gz_topic_name: "RadioBox1/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox2/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox2/odom"
+  gz_topic_name: "RadioBox2/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox3/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox3/odom"
+  gz_topic_name: "RadioBox3/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox4/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox4/odom"
+  gz_topic_name: "RadioBox4/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox5/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox5/odom"
+  gz_topic_name: "RadioBox5/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "RadioBox6/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox6/odom"
+  gz_topic_name: "RadioBox6/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "RadioBox7/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox7/odom"
+- ros_topic_name: "atlas/gnss_rtk_rel_nav" 
+  gz_topic_name: "atlas/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "RadioBox8/gnss_rtk_rel_nav" 
-  gz_topic_name: "RadioBox8/odom"
+- ros_topic_name: "bestla/gnss_rtk_rel_nav" 
+  gz_topic_name: "bestla/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS

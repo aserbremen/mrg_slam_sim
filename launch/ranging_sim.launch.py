@@ -1,5 +1,5 @@
 import os
-import sys
+import shutil
 import yaml
 import xml.etree.ElementTree as ET
 
@@ -34,7 +34,7 @@ def namespace_sdf_file(sdf_path, namespace):
     for plugin in tree.findall('model/plugin'):
         if plugin.attrib['name'] == 'ignition::gazebo::systems::OdometryPublisher':
             # Give the odometry publisher a unique topic name
-            plugin.find('odom_topic').text = namespace + '/odom'
+            plugin.find('odom_topic').text = namespace + '/odom_ground_truth'
 
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
@@ -53,15 +53,14 @@ def spawn_model_process(ign_service_name, sdf_path, model_name, x, y, z, qx, qy,
     return process
 
 
-# This launch file spawns a lander and radio boxes in the simulation world and the corresponding ros_gz_bridge
 def generate_launch_description():
     mrg_slam_sim_share_dir = get_package_share_directory('mrg_slam_sim')
-    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'radio_boxes_sim.yaml')
+    config_file = os.path.join(mrg_slam_sim_share_dir, 'config', 'ranging_sim.yaml')
     with open(config_file, 'r') as f:
-        params = yaml.safe_load(f)['radio_boxes_sim']['ros__parameters']
+        params = yaml.safe_load(f)['ranging_sim']['ros__parameters']
         yaml.dump(params, sort_keys=False, default_flow_style=False)
 
-    print(f'spawning radio boxes in {params["world"]}')
+    print(f'spawning ranging devices in {params["world"]}')
 
     launch_description_list = []
     # spawn the lander in the rubicon world which also publishes odom message for radio navigation
@@ -75,14 +74,14 @@ def generate_launch_description():
     launch_description_list.append(lander_process)
 
     # parse the spawn poses (x, y, z, roll, pitch, yaw) from the yaml file
-    spawn_poses = np.array(params['poses']).reshape(-1, 6)
+    spawn_poses = np.array(params['ranging_device_poses']).reshape(-1, 6)
     # spawn a radio box for each pose
-    base_name = params['radio_box_name']
+    base_name = params['ranging_device_name']
     for i, pose in enumerate(spawn_poses):
-        print(f'spawning radio box {i + 1} at pose {pose}')
-        name = base_name + str(i + 1)
+        print(f'spawning ranging device {i} at pose {pose}')
+        name = base_name + str(i)
 
-        sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['radio_box_sdf_file'])
+        sdf_path = os.path.join(mrg_slam_sim_share_dir, 'models', params['ranging_device_sdf_file'])
         # We create a temporary sdf file to namespace the cmd_vel and laser scan topics for use with multiple robots
         sdf_path_tmp = sdf_path.replace('.sdf', '_' + name + '.sdf')
         os.system(f'cp {sdf_path} {sdf_path_tmp}')
@@ -95,7 +94,7 @@ def generate_launch_description():
         launch_description_list.append(spawn_process)
 
     # create a ros_gz_bridge which creates a config file for the radio boxes on the fly
-    ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'radio_boxes_ros_gz_bridge.yaml')
+    ros_gz_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'ranging_ros_gz_bridge.yaml')
     ros_gz_bridge = ExecuteProcess(cmd=['ros2', 'run', 'ros_gz_bridge', 'parameter_bridge',
                                         '--ros-args', '-p', 'config_file:=' + ros_gz_config], output='screen')
     launch_description_list.append(ros_gz_bridge)

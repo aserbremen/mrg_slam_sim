@@ -1,0 +1,42 @@
+ranging_sim:
+  ros__parameters:
+    world: "marsyard2020" # name of the world in which the robot should be spawned
+    
+    lander_sdf_file: "LANDER/model.sdf" # path to the sdf file in the share folder of the package
+    lander_name: "Lander" # name of the lander, certain topic names are namespaced with this name
+    lander_pose: [0.0, 0.0, 0.8, 0.0, 0.0, 0.0]
+    
+    ranging_device_sdf_file: "RADIO_BOX/model.sdf" # path to the sdf file in the share folder of the package
+    ranging_device_name: "RadioBox" # name of the device, certain topic names are namespaced with this name, name will be automatically appended with a number
+    # start poses of the devices in the world, each row (x, y, z, roll, pitch, yaw) is a pose of a device
+    # the number of rows determines the number of devices spawned
+    ranging_device_poses: [
+      -15.0, 0.0, 1.0, 0.0, 0.0, 0.0,  # 0
+      -14.3, 8.0, 1.95, 0.0, 0.0, 0.0,  # 1
+      11.07, 11.6, 0.5, 0.0, 0.0, 0.0,  # 2
+      4.0, -5.5, 0.6, 0.0, 0.0, 0.0,  # 3
+      1.1, -16.0, 1.0, 0.0, 0.0, 0.0,  # 4
+      18.0, -5.8, 1.55, 0.0, 0.0, 0.0,  # 5
+      3.0, 10.0, 1.0, 0.0, 0.0, 0.0,  # 6
+    ]
+
+# poses for marsyard2020
+#   poses: [
+#   -15.0, 0.0, 1.0, 0.0, 0.0, 0.0,  # 0
+#   -14.3, 8.0, 1.95, 0.0, 0.0, 0.0,  # 1
+#   8.0, -3.5, 1.85, 0.0, 0.0, 0.0,  # 2
+#   5.0, -10.0, 1.0, 0.0, 0.0, 0.0,  # 3
+#   17.0, -5.0, 1.0, 0.0, 0.0, 0.0,  # 4
+#   19.0, -2.5, 2.5, 0.0, 0.0, 0.0,  # 5
+#   3.0, 10.0, 1.0, 0.0, 0.0, 0.0,  # 6
+# ]
+# poses for rubicon
+# poses: [
+#   -5.0, -4.0, 4.05, 0.0, 0.0, 0.0,  # 0
+#   -10.0, -6.5, 4.85, 0.0, 0.0, 0.0,  # 1
+#   12.32, -4.39, 4.15, 0.0, 0.0, 0.0,  # 2
+#   1.5, -1.7, 1.35, 0.0, 0.0, 0.0,  # 3
+#   -7.0, 10.68, 3.58, 0.0, 0.0, 0.0,  # 4
+#   -7.5, 12.23, 2.72, 0.0, 0.0, 0.0,  # 5
+#   -6.61, -13.78, 3.0, 0.0, 0.0, 0.0,  # 6
+# ]
