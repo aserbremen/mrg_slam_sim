@@ -34,7 +34,7 @@ def namespace_ros_gz_config(ros_gz_config, model_namespace):
     # add namespace to the topics
     for bridged_msg_dict in ros_gz_yaml:
         print(f'bridged_msg: {bridged_msg_dict}')
-        if bridged_msg_dict['ros_topic_name'] == 'clock':
+        if bridged_msg_dict['ros_topic_name'] == 'clock' or bridged_msg_dict['ros_topic_name'] == 'tf':
             continue
         bridged_msg_dict['ros_topic_name'] = model_namespace + '/' + bridged_msg_dict['ros_topic_name']
         bridged_msg_dict['gz_topic_name'] = model_namespace + '/' + bridged_msg_dict['gz_topic_name']

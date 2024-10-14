@@ -51,6 +51,12 @@
   gz_type_name: "ignition.msgs.Twist"
   direction: ROS_TO_GZ
 
+- ros_topic_name: "tf"
+  gz_topic_name: "/model/atlas/pose"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
 - ros_topic_name: "clock"
   gz_topic_name: "clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"

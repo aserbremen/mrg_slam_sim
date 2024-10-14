@@ -30,3 +30,10 @@
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "ignition.msgs.Clock"
   direction: GZ_TO_ROS
+
+# tf
+- ros_topic_name: "tf"
+  gz_topic_name: "model/atlas/pose"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
+  direction: GZ_TO_ROS

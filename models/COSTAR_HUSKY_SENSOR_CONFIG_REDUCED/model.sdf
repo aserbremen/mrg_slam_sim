@@ -737,10 +737,20 @@
       filename="libignition-gazebo-odometry-publisher-system.so"
       name="ignition::gazebo::systems::OdometryPublisher">
       <dimensions>3</dimensions>
-      <odom_publish_frequency>100.0</odom_publish_frequency>
+      <odom_publish_frequency>100</odom_publish_frequency>
       <odom_topic>odom_ground_truth</odom_topic>
       <odom_frame>map</odom_frame>
       <robot_base_frame>base_link</robot_base_frame>
+    </plugin>
+
+    <plugin 
+      filename="libignition-gazebo-pose-publisher-system.so"
+      name="ignition::gazebo::systems::PosePublisher">
+      <use_pose_vector_msg>true</use_pose_vector_msg>
+      <publish_nested_model_pose>true</publish_nested_model_pose>
+      <publish_sensor_pose>true</publish_sensor_pose>
+      <publish_link_pose>true</publish_link_pose>
+      <update_frequency>100</update_frequency>
     </plugin>
 
   </model>
