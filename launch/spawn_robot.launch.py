@@ -2,10 +2,13 @@ import os
 import yaml
 import xml.etree.ElementTree as ET
 import copy
+import subprocess
 
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess, DeclareLaunchArgument, OpaqueFunction
+from launch.actions import ExecuteProcess, DeclareLaunchArgument, OpaqueFunction, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
 import numpy as np
 
 
@@ -88,6 +91,27 @@ def namespace_sdf_file(sdf_path, params):
 
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
+def get_gazebo_command():
+    ign_result = subprocess.run(['which ign'], shell=True, capture_output=True, text=True)
+    gz_result = subprocess.run(['which gz'], shell=True, capture_output=True, text=True)
+    if ign_result.stdout.strip() != '':
+        print('Detected Ignition Gazebo, trying to use ign command')
+        return ign_result.stdout.strip()
+    elif gz_result.stdout.strip() != '':
+        print('Detected gz Gazebo, trying to use gz command')
+        return gz_result.stdout.strip()
+
+# def get_request_type(gazebo_command):
+#     if 'ign' in gazebo_command:
+#         return 'ignition.msgs.EntityFactory'
+#     elif 'gz' in gazebo_command:
+#         return 'gazebo_msgs.srv.SpawnModel'
+    
+# def get_reptype(gazebo_command):
+#     if 'ign' in gazebo_command:
+#         return 'ignition.msgs.BooleanMsg'
+#     elif 'gz' in gazebo_command:
+#         return 'gazebo_msgs.srv.SpawnModel'
 
 def launch_setup(context):
     print('launching robot')
@@ -109,23 +133,33 @@ def launch_setup(context):
         os.system(f'cp {sdf_path} {sdf_path_final}')
         namespace_sdf_file(sdf_path_final, params)
 
-    ign_service_name = '/world/' + params['world'] + '/create'
-
     x, y, z = params['x'], params['y'], params['z']
     qx, qy, qz, qw = get_quaternion_from_euler(params['roll'], params['pitch'], params['yaw'])
-
-    ign_request_args = 'sdf_filename: \"' + sdf_path_final + '\"' + ', name: \"' + params['robot_name'] + \
-        '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
-
-    cmd_string_list = ['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
-                       'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', ign_request_args]
-
-    print(f'executing command: {cmd_string_list}')
-    process = ExecuteProcess(
-        cmd=['ign', 'service', '-s', ign_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
-             'ignition.msgs.Boolean', '--timeout', '10000', '--req', ign_request_args],
-        output='screen')
-
+    gazebo_command = get_gazebo_command()
+    if 'ign' in gazebo_command:
+        gazebo_service_name = '/world/' + params['world'] + '/create'
+        gazebo_request_args = 'sdf_filename: \"' + sdf_path_final + '\"' + ', name: \"' + params['robot_name'] + \
+            '\"' + f', pose: {{ position: {{ x: {x}, y: {y}, z: {z} }}, orientation: {{ x: {qx}, y: {qy}, z: {qz}, w: {qw} }}}}'
+        cmd_string_list = [gazebo_command, 'service', '-s', gazebo_service_name, '--reqtype', 'ignition.msgs.EntityFactory', '--reptype',
+                        'ignition.msgs.BooleanMsg', '--timeout', '10000', '--req', gazebo_request_args]
+        print(f'executing command: {cmd_string_list}')
+        process = ExecuteProcess(cmd=cmd_string_list, output='screen')
+    elif 'gz' in gazebo_command:
+        process = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('ros_gz_sim'), 
+                                                       'launch', 'gz_spawn_model.launch.py')),
+            launch_arguments={
+                'world': params['world'],
+                'file': sdf_path_final,
+                'entity_name': params['robot_name'],
+                'x': str(x), 'y': str(y), 'z': str(z),
+                'roll': str(params['roll']), 'pitch': str(params['pitch']), 'yaw': str(params['yaw'])
+            }.items()
+        )
+    else:
+        print('Could not find gazebo command [gz or ign], exiting')
+        exit(1)
+    
     return [process]
 
 
