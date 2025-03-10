@@ -21,27 +21,25 @@ def namespace_ros_gz_config(ros_gz_config, model_namespace):
     # copy the ros_gz_config to a new file considering namespace and symlink
     ros_gz_config_namespaced = ros_gz_config.replace('.yaml', '_' + model_namespace + '.yaml')  # we return this
     ros_gz_config_real = os.path.realpath(ros_gz_config)
-    print(f'ros_gz_config_real: {ros_gz_config_real}')
-    print(f'ros_gz_config_namespaced: {ros_gz_config_namespaced}')
     # copy ros_gz_config to ros_gz_config_namespaced, follow symlinks
     shutil.copy(ros_gz_config_real, ros_gz_config_namespaced, follow_symlinks=True)
 
     # read the yaml file
     with open(ros_gz_config_namespaced, 'r') as f:
         ros_gz_yaml = yaml.safe_load(f)
-        print(f'ros_gz_yaml: {ros_gz_yaml}')
+        print(f'Original ros_gz_yaml: {ros_gz_yaml}')
 
     # add namespace to the topics
     for bridged_msg_dict in ros_gz_yaml:
-        print(f'bridged_msg: {bridged_msg_dict}')
+        print(f'\nbridged_msg: {bridged_msg_dict}')
         if bridged_msg_dict['ros_topic_name'] == 'clock':
             continue
         bridged_msg_dict['ros_topic_name'] = model_namespace + '/' + bridged_msg_dict['ros_topic_name']
         bridged_msg_dict['gz_topic_name'] = model_namespace + '/' + bridged_msg_dict['gz_topic_name']
+        print(f'namespaced bridged_msg: {bridged_msg_dict}')
 
     # write the yaml file with the added namespace
-    print(f'writing to {ros_gz_config_namespaced}')
-    print(f'ros_gz_yaml: {ros_gz_yaml}')
+    print(f'\nwriting namespaced ros_gz_yaml to: {ros_gz_config_namespaced}')
     with open(ros_gz_config_namespaced, 'w') as f:
         yaml.dump(ros_gz_yaml, f, sort_keys=False, default_flow_style=False)
 
@@ -74,6 +72,7 @@ def generate_launch_description():
     )
     # transform all booleans to string, IncldueLaunchDescription does not support booleans
     booleans_to_strings_in_dict(spawn_robot_params)
+    print(f'Going to spawn robot with params: {spawn_robot_params}')
     spawn_robot = IncludeLaunchDescription(
         spawn_robot_python_source,
         launch_arguments=spawn_robot_params.items(),

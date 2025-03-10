@@ -282,7 +282,7 @@
 
       <sensor name="front_laser" type="gpu_lidar">
         <topic>laser_scan</topic>
-        <ignition_frame_id>velodyne</ignition_frame_id>
+        <gz_frame_id>velodyne</gz_frame_id>
         <visualize>0</visualize>
         <update_rate>10</update_rate>
         <lidar>
@@ -354,7 +354,7 @@
         <always_on>0</always_on>
         <update_rate>100</update_rate>
         <topic>imu/data</topic>
-        <ignition_frame_id>base_link</ignition_frame_id>
+        <gz_frame_id>base_link</gz_frame_id>
         <imu>
           <enable_orientation>0</enable_orientation>
           <angular_velocity>
@@ -707,8 +707,8 @@
 
     <!-- Differential drive plugin for rear wheels -->
     <plugin
-      filename="libignition-gazebo-diff-drive-system.so"
-      name="ignition::gazebo::systems::DiffDrive">
+      filename="gz-sim-diff-drive-system"
+      name="gz::sim::systems::DiffDrive">
       <left_joint>rear_left_wheel_joint</left_joint>
       <left_joint>front_left_wheel_joint</left_joint>
       <right_joint>front_right_wheel_joint</right_joint>
@@ -722,8 +722,8 @@
 
     <!-- ground truth odometry plugin -->
     <plugin
-      filename="libignition-gazebo-odometry-publisher-system.so"
-      name="ignition::gazebo::systems::OdometryPublisher">
+      filename="gz-sim-odometry-publisher-system"
+      name="gz::sim::systems::OdometryPublisher">
       <dimensions>3</dimensions>
       <odom_publish_frequency>100.0</odom_publish_frequency>
       <odom_topic>odom_ground_truth</odom_topic>

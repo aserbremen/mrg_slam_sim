@@ -80,14 +80,14 @@ def namespace_sdf_file(sdf_path, params):
             # Give the laser scan points a unique topic name
             sensor.find('topic').text = namespace + '/laser_scan'
             # Create the ignition frame id for the laser scan and make it unique
-            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
+            sensor.find('gz_frame_id').text = namespace + '/' + sensor.find('gz_frame_id').text
         if sensor.attrib['name'] == 'imu_sensor' and params['use_imu']:
             # Set always on for the imu sensor to true
             sensor.find('always_on').text = '0'
             # Give the imu sensor a unique topic name
             sensor.find('topic').text = namespace + '/imu/data'
             # Create the ignition frame id for the imu sensor and make it unique
-            sensor.find('ignition_frame_id').text = namespace + '/' + sensor.find('ignition_frame_id').text
+            sensor.find('gz_frame_id').text = namespace + '/' + sensor.find('gz_frame_id').text
 
     tree.write(file_or_filename=sdf_path, encoding='utf-8', xml_declaration=True)
 
@@ -100,18 +100,6 @@ def get_gazebo_command():
     elif gz_result.stdout.strip() != '':
         print('Detected gz Gazebo, trying to use gz command')
         return gz_result.stdout.strip()
-
-# def get_request_type(gazebo_command):
-#     if 'ign' in gazebo_command:
-#         return 'ignition.msgs.EntityFactory'
-#     elif 'gz' in gazebo_command:
-#         return 'gazebo_msgs.srv.SpawnModel'
-    
-# def get_reptype(gazebo_command):
-#     if 'ign' in gazebo_command:
-#         return 'ignition.msgs.BooleanMsg'
-#     elif 'gz' in gazebo_command:
-#         return 'gazebo_msgs.srv.SpawnModel'
 
 def launch_setup(context):
     print('launching robot')
