@@ -4,8 +4,8 @@
   gz_type_name: "ignition.msgs.Clock"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "Lander/gnss_rtk_rel_nav" 
-  gz_topic_name: "Lander/odom_ground_truth"
+- ros_topic_name: "lander/gnss_rtk_rel_nav" 
+  gz_topic_name: "lander/odom_ground_truth"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
