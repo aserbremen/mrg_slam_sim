@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import sys
 import yaml
@@ -20,10 +21,26 @@ def values_to_strings_in_dict(dictionary):
     return dictionary
 
 
+def get_gazebo_command():
+    ign_result = subprocess.run(['which ign'], shell=True, capture_output=True, text=True)
+    gz_result = subprocess.run(['which gz'], shell=True, capture_output=True, text=True)
+    if ign_result.stdout.strip() != '':
+        print('Detected Ignition Gazebo, trying to use ign command')
+        return ign_result.stdout.strip()
+    elif gz_result.stdout.strip() != '':
+        print('Detected gz Gazebo, trying to use gz command')
+        return gz_result.stdout.strip()
+
+
 def generate_ros_gz_bridge_dict(sim_params):
+    gz_command = get_gazebo_command()
+    if 'ign' in gz_command:
+        ign = True
+    else:
+        ign = False
     res = [{'gz_topic_name': 'clock',
            'ros_topic_name': 'clock',
-            'gz_type_name': 'ignition.msgs.Clock',
+            'gz_type_name': 'ignition.msgs.Clock' if ign else 'gz.msgs.Clock',
             'ros_type_name': 'rosgraph_msgs/msg/Clock',
             'direction': 'GZ_TO_ROS'}]
     for robot_name, ros_gz_bridge_ros_topic in zip(sim_params['robot_names'], sim_params['ros_gz_bridge_ros_topics']):
@@ -38,22 +55,22 @@ def generate_ros_gz_bridge_dict(sim_params):
             }
             if gz_topic == 'laser_scan/points':
                 topic_dict.update({
-                    'gz_type_name': 'ignition.msgs.PointCloudPacked',
+                    'gz_type_name': 'ignition.msgs.PointCloudPacked' if ign else 'gz.msgs.PointCloudPacked',
                     'ros_type_name': 'sensor_msgs/msg/PointCloud2',
                 })
             elif gz_topic == 'imu/data':
                 topic_dict.update({
-                    'gz_type_name': 'ignition.msgs.IMU',
+                    'gz_type_name': 'ignition.msgs.IMU' if ign else 'gz.msgs.IMU',
                     'ros_type_name': 'sensor_msgs/msg/Imu',
                 })
             elif gz_topic == 'odom_ground_truth':
                 topic_dict.update({
-                    'gz_type_name': 'ignition.msgs.Odometry',
+                    'gz_type_name': 'ignition.msgs.Odometry' if ign else 'gz.msgs.Odometry',
                     'ros_type_name': 'nav_msgs/msg/Odometry',
                 })
             elif gz_topic == 'cmd_vel':
                 topic_dict.update({
-                    'gz_type_name': 'ignition.msgs.Twist',
+                    'gz_type_name': 'ignition.msgs.Twist' if ign else 'gz.msgs.Twist',
                     'ros_type_name': 'geometry_msgs/msg/Twist',
                     'direction': 'ROS_TO_GZ'  # Override direction for cmd_vel
                 })
@@ -100,6 +117,7 @@ def generate_launch_description():
     ros_gz_tmp_config = os.path.join(mrg_slam_sim_share_dir, 'config', 'multi_robot_ros_gz_bridge_tmp.yaml')
     os.system('cp ' + ros_gz_config + ' ' + ros_gz_tmp_config)
     ros_gz_bridge_dict = generate_ros_gz_bridge_dict(sim_params)
+    print('Using the following ros_gz_bridge_dict:')
     print(ros_gz_bridge_dict)
     with open(ros_gz_tmp_config, 'w') as f:
         yaml.safe_dump(ros_gz_bridge_dict, f)

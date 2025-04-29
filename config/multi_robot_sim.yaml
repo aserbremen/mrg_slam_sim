@@ -4,7 +4,7 @@ sim:
     world: "marsyard2020" # options are "marsyard2020" and "rubicon"
     use_sim_time: true
     # robot names are used for the ros topics for the spawn and the bridge
-    robot_names: ["", "atlas", "bestla"]
+    robot_names: ["atlas", "bestla", "chorus"]
     # start poses of the robots in the world
     init_poses: [
       {x: 15.4, y: 9.6, z: 1.15, roll: 0.0, pitch: 0.0, yaw: -1.5708},
@@ -35,7 +35,7 @@ teleop_joy:
     enable_teleop_joy: true # otherwise use the teleop_twist_keyboard
     namespace: "atlas" # namespace of the robot
     joy_config: "xbox" # "xbox" or "ps3"
-    joy_dev: "/dev/input/js0" # joystick device
+    joy_dev: "0" # joystick device
     cmd_vel_topic: "atlas/cmd_vel" # topic to publish the cmd_vel to
     joy_topic: "atlas/joy" # topic to subscribe to for the joystick input
 
