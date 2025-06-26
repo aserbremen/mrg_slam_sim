@@ -16,6 +16,6 @@ teleop_joy:
   ros__parameters:
     enable_teleop_joy: true
     joy_config: "xbox" # "xbox" or "ps3"
-    joy_dev: "/dev/input/js0" # joystick device
-    cmd_vel_topic: "atlas/cmd_vel" # topic to publish the cmd_vel to
-    joy_topic: "atlas/joy" # topic to subscribe to for the joystick input
+    joy_dev: "0" # joystick device
+    cmd_vel_topic: "cmd_vel" # topic to publish the cmd_vel to
+    joy_topic: "joy" # topic to subscribe to for the joystick input
