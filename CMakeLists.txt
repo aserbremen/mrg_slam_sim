@@ -13,7 +13,4 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
-# setup the environmental hooks for the Gazebo resource path
-ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/gz_sim_resource_path.dsv.in")
-
 ament_package()

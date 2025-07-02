@@ -1,3 +1,0 @@
-# Ament environment hook for IGN_GAZEBO_RESOURCE_PATH
-prepend-non-duplicate;IGN_GAZEBO_RESOURCE_PATH;share/@PROJECT_NAME@/worlds
-prepend-non-duplicate;IGN_GAZEBO_RESOURCE_PATH;share/@PROJECT_NAME@/models
