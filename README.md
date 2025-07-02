@@ -1,16 +1,21 @@
 # Multi-Robot Graph SLAM using LIDAR Simulation Package
 
-This repository contains a world and launch files for testing the the [Multi-Robot Graph SLAM Framework](https://github.com/aserbremen/Multi-Robot-Graph-SLAM) in a simulated environment using Gazebo (tested on ROS2 humble and Gazebo Fortress).
+This repository contains a world and launch files for testing the the [Multi-Robot Graph SLAM Framework](https://github.com/aserbremen/Multi-Robot-Graph-SLAM) in a simulated environment using Gazebo. Tested on
+
+- ROS2 humble and Gazebo Fortress
+- ROS2 Jazzy and Gazebo Harmonic (minimal, see below), checkout branch `gazebo_harmonic`
 
 ## Dependencies
 
 This package depends on the following packages:
 
 - [Gazebo Fortress](https://gazebosim.org/docs/fortress/install)
+- [Gazebo Harmonic](https://gazebosim.org/docs/harmonic/getstarted/)
 - [ros_gz](https://github.com/gazebosim/ros_gz/tree/humble)
 
 ```
-sudo apt install ros-humble-ros-gz
+sudo apt install ros-humble-ros-gz # ROS2 JazzHumble
+sudo apt install ros-jazzy-ros-gz # ROS2 Jazzy
 ```
 
 ## Usage for two robots in the marsyard2020 environment
@@ -30,7 +35,7 @@ ros2 launch mrg_slam_sim marsyard2020.launch.py
 Spawn two robots equipped with LIDAR sensors and bridge the sensor data to ROS2 topics. Also start the teleop_joystick node to control the first robot atlas with a joystick (xbox). This terminal has to be kept active.
 
 ```
-ros2 launch mrg_slam_sim dual_robot_sim.launch.py
+ros2 launch mrg_slam_sim dual_robot_sim.launch.py # only for Gazebo Fortress at the moment
 ```
 
 You should be able to control the first robot atlas with the joystick. 
@@ -77,7 +82,7 @@ rviz2 -d /path/to/mrg_slam/rviz/mrg_slam.rviz --ros-args -p use_sime_time:=true
 Many packages use hard-coded frames like `/base_link` or `/odom`. If you want to test the Multi-Robot Graph SLAM Framework with a single robot without a namespace, you can use the [single_robot_sim.launch.py](launch/single_robot_sim.launch.py) launch file. After launching the gazebo world in step 1 above, you can spawn a single robot. 
 
 ```
-ros2 launch mrg_slam_sim single_robot_sim.launch.py
+ros2 launch mrg_slam_sim single_robot_sim.launch.py # Gazebo Fortress & Harmonic
 ```
 
 ### Simulate a single robot with a namespace / robot name
